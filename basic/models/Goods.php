@@ -61,15 +61,15 @@ class Goods extends ActiveRecord
     }
 
 
-    public function goods_add($data=array(), $scenario ='member_add')
+    public function goods_add($data=array(), $scenario ='goods_add')
     {
         $this->scenario = $scenario;
         $this->load($data,"");
         if ($this->validate()){
-            $this->member_time = time();
+            $this->goods_add_time = time();
             $result=$this->save(false);
             if ($result) {
-                return $this->member_id;
+                return $this->goods_id;
             }
             return false;
         }
@@ -77,7 +77,7 @@ class Goods extends ActiveRecord
     }
 
 
-    public  function  goods_edit($data, $scenario = 'member_edit'){
+    public  function  goods_edit($data, $scenario = 'goods_edit'){
         $this->scenario = $scenario;
 
         $this->load($data,"");
@@ -101,20 +101,20 @@ class Goods extends ActiveRecord
                     'member_money'      =>  $data["member_money"]
                 ],
                 'member_id = :member_id',
-                [':member_id' => $this->member_id]
+                [':member_id' => $this->goods_id]
             );
         }
         return false;
     }
 
 
-    public  function  goods_delete($member_id){
+    public  function  goods_delete($goods_id){
 
         $this->scenario="goods_delete";
-        $this->load($data["member_id"]=$member_id,"");
+        $this->load($data["goods_id"]=$goods_id,"");
         if($this->validate()) {
 
-            if ($this->delete($member_id)) {
+            if ($this->delete($goods_id)) {
                 return true;
             }
         }
@@ -122,7 +122,7 @@ class Goods extends ActiveRecord
 
     }
 
-    public  function  get_view_by_id($member_id){
-       return $this->findOne($member_id);
+    public  function  get_view_by_id($goods_id){
+       return $this->findOne($goods_id);
     }
 }

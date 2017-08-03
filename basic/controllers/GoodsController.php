@@ -20,12 +20,12 @@ class GoodsController extends Controller
         Yii::$app->response->format=Response::FORMAT_JSON;
         $page= Yii::$app->request->get("page");
         $page_limit= Yii::$app->request->get("page_limit");
-        $memberCount=Member::find()->count();
-        $memberList =  Member::find()->offset($page*$page_limit)->limit($page_limit)->asArray()->all();
+        $goodsCount=Goods::find()->count();
+        $goodsList =  Goods::find()->offset($page*$page_limit)->limit($page_limit)->asArray()->all();
         return [
             'code'=>true,
-            'count'=>$memberCount,
-            "data"=>$memberList
+            'count'=>$goodsCount,
+            "data"=>$goodsList
         ];
     }
 
@@ -33,9 +33,9 @@ class GoodsController extends Controller
     {
         Yii::$app->response->format=Response::FORMAT_JSON;
         $returnData=array();
-        $model=new Member();
+        $model=new Goods();
         $post=Yii::$app->request->post();
-        $result=$model->member_add($post);
+        $result=$model->goods_add($post);
         if($result){
             $returnData["code"]=true;
             $returnData["tip"]="新增成功!";
@@ -54,10 +54,10 @@ class GoodsController extends Controller
 
     public function  actionUpdate($member_id){
         Yii::$app->response->format=Response::FORMAT_JSON;
-        $model=new Member();
+        $model=new Goods();
         $post=Yii::$app->request->post();
         $post["member_id"]=$member_id;
-        $result=$model->member_edit($post);
+        $result=$model->goods_edit($post);
         if($result){
             $returnData["code"]=true;
             $returnData["tip"]="修改成功!";
@@ -73,7 +73,7 @@ class GoodsController extends Controller
 
     public  function  actionView($member_id){
         Yii::$app->response->format=Response::FORMAT_JSON;
-        $model=new Member();
+        $model=new Goods();
         $result=$model->get_view_by_id($member_id);
         $result=ArrayHelper::toArray($result);
         if($result){
@@ -92,8 +92,8 @@ class GoodsController extends Controller
 
     public function actionDelete($member_id){
         Yii::$app->response->format=Response::FORMAT_JSON;
-        $model=new Member();
-        $result=$model->member_delete($member_id);
+        $model=new Goods();
+        $result=$model->goods_delete($member_id);
         if($result){
             $returnData["code"]=true;
             $returnData["tip"]="删除成功!";
