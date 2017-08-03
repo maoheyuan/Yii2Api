@@ -39,13 +39,12 @@ class Member extends ActiveRecord
     public function rules()
     {
         return [
-            ['member_id', 'required', 'message' => '会员ID不能为空',"on"=>["member_edit"]],
+            ['member_id', 'required', 'message' => '会员ID不能为空',"on"=>["member_edit","member_delete"]],
             ['member_name', 'required', 'message' => '会员名称不能为空',"on"=>["member_edit","member_add"]],
             ['member_truename','required',"message"=>'真实姓名不能为空',"on"=>["member_edit","member_add"]],
             ['member_avatar','required',"message"=>'会员头像不能为空',"on"=>["member_edit","member_add"]],
             ['member_sex','required',"message"=>'性别不能为空',"on"=>["member_edit","member_add"]],
             ['member_passwd','required',"message"=>'密码不能为空',"on"=>["member_edit","member_add"]],
-            ['member_rpasswd','required',"message"=>'确认密码不能为空',"on"=>["member_edit","member_add"]],
             ['member_mobile','required',"message"=>'会员手机号不能为空',"on"=>["member_edit","member_add"]],
             ['member_qq','required',"message"=>'qq不能为空',"on"=>["member_edit","member_add"]],
             ['member_birthday','required',"message"=>'生日不能为空',"on"=>["member_edit","member_add"]],
@@ -61,13 +60,15 @@ class Member extends ActiveRecord
     }
 
 
-    public function member_add($data, $scenario = 'member_add')
+    public function member_add($data=array(), $scenario ='member_add')
     {
         $this->scenario = $scenario;
-        if ($this->load($data) && $this->validate()) {
+        $this->load($data,"");
+        if ($this->validate()){
             $this->member_time = time();
-            if ($this->save(false)) {
-                return true;
+            $result=$this->save(false);
+            if ($result) {
+                return $this->member_id;
             }
             return false;
         }
@@ -78,8 +79,8 @@ class Member extends ActiveRecord
     public  function  member_edit($data, $scenario = 'member_edit'){
         $this->scenario = $scenario;
 
-        $this->scenario = "changepass";
-        if ($this->load($data) && $this->validate()) {
+        $this->load($data,"");
+        if ($this->validate()) {
             return (bool)$this->updateAll(
                 [
                     'member_name'       =>  $data["member_name"],
@@ -97,13 +98,31 @@ class Member extends ActiveRecord
                     'member_provinceid' =>  $data["member_provinceid"],
                     'member_areainfo'   =>  $data["member_areainfo"],
                     'member_money'      =>  $data["member_money"]
-
                 ],
                 'member_id = :member_id',
                 [':member_id' => $this->member_id]
             );
         }
         return false;
+    }
 
+
+    public  function  member_delete($member_id){
+
+        $this->scenario="member_delete";
+        $this->load($data["member_id"]=$member_id,"");
+        if($this->validate()) {
+
+            if ($this->delete($member_id)) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+
+    public  function  get_view_by_id($member_id){
+       return $this->findOne($member_id);
     }
 }
