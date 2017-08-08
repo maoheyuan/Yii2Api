@@ -13,8 +13,6 @@ class Goods extends ActiveRecord
         return "{{%goods}}";
     }
 
-
-
     /*CREATE TABLE `mhy_goods` (
     `goods_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '商品索引id',
     `category_id` int(10) unsigned NOT NULL COMMENT '商品分类id',
@@ -41,10 +39,10 @@ class Goods extends ActiveRecord
     {
         return [
             ['goods_id', 'required', 'message' => '商品索引ID不能为空',"on"=>["goods_edit","goods_delete"]],
+
             ['category_id', 'required', 'message' => '商品分类id不能为空',"on"=>["goods_edit","goods_add"]],
             ['goods_name','required',"message"=>'商品名称不能为空',"on"=>["goods_edit","goods_add"]],
             ['spec_name','required',"message"=>'规格名称不能为空',"on"=>["goods_edit","goods_add"]],
-
             ['goods_image','required',"message"=>'默认封面图片不能为空',"on"=>["goods_edit","goods_add"]],
             ['goods_image_more','required',"message"=>'商品货号不能为空',"on"=>["goods_edit","goods_add"]],
             ['goods_serial','required',"message"=>'商品货号不能为空',"on"=>["goods_edit","goods_add"]],
@@ -53,8 +51,8 @@ class Goods extends ActiveRecord
             ['goods_body','required',"message"=>'member_time不能为空',"on"=>["goods_add"]],
             ['goods_starttime','required',"message"=>'发布开始时间不能为空',"on"=>["goods_edit","goods_add"]],
             ['goods_endtime','required',"message"=>'发布结束时间不能为空',"on"=>["goods_edit","goods_add"]],
-            ['goods_add_time','required',"message"=>'添加时间不能为空',"on"=>["goods_edit","goods_add"]],
-            ['goods_edit_time','required',"message"=>'修改时间不能为空',"on"=>["goods_edit","goods_add"]],
+            ['goods_add_time','required',"message"=>'添加时间不能为空',"on"=>["goods_add"]],
+            ['goods_edit_time','required',"message"=>'修改时间不能为空',"on"=>["goods_edit"]],
             ['goods_sort','required',"message"=>'排序不能为空',"on"=>["goods_edit","goods_add"]]
 
         ];
@@ -64,6 +62,7 @@ class Goods extends ActiveRecord
     public function goods_add($data=array(), $scenario ='goods_add')
     {
         $this->scenario = $scenario;
+        $data["goods_add_time"]=time();
         $this->load($data,"");
         if ($this->validate()){
             $this->goods_add_time = time();
@@ -79,29 +78,30 @@ class Goods extends ActiveRecord
 
     public  function  goods_edit($data, $scenario = 'goods_edit'){
         $this->scenario = $scenario;
-
+        $data["goods_edit_time"]=time();
         $this->load($data,"");
         if ($this->validate()) {
             return (bool)$this->updateAll(
                 [
-                    'member_name'       =>  $data["member_name"],
-                    'member_truename'   =>  $data["member_truename"],
-                    'member_avatar'     =>  $data["member_avatar"],
-                    'member_sex'        =>  $data["member_sex"],
-                    'member_passwd'     =>  $data["member_passwd"],
-                    'member_mobile'     =>  $data["member_mobile"],
-                    'member_qq'         =>  $data["member_qq"],
-                    'member_birthday'   =>  $data["member_birthday"],
-                    'member_time'       =>  $data["member_time"],
-                    'member_state'      =>  $data["member_state"],
-                    'member_areaid'     =>  $data["member_areaid"],
-                    'member_cityid'     =>  $data["member_cityid"],
-                    'member_provinceid' =>  $data["member_provinceid"],
-                    'member_areainfo'   =>  $data["member_areainfo"],
-                    'member_money'      =>  $data["member_money"]
+                    'category_id'       =>  $data["category_id"],
+                    'goods_name'   =>  $data["goods_name"],
+                    'spec_name'     =>  $data["spec_name"],
+                    'goods_spec'        =>  $data["goods_spec"],
+                    'goods_image'     =>  $data["goods_image"],
+                    'goods_image_more'     =>  $data["goods_image_more"],
+                    'goods_serial'         =>  $data["goods_serial"],
+                    'goods_state'   =>  $data["goods_state"],
+                    'goods_commend'       =>  $data["goods_commend"],
+                    'goods_body'      =>  $data["goods_body"],
+                    'goods_starttime'     =>  $data["goods_starttime"],
+                    'goods_endtime'     =>  $data["goods_endtime"],
+                    'goods_close_reason' =>  $data["goods_close_reason"],
+                    'goods_add_time'   =>  $data["goods_add_time"],
+                    'goods_edit_time'      =>  $data["goods_edit_time"],
+                    'goods_sort'   =>  $data["goods_sort"]
                 ],
-                'member_id = :member_id',
-                [':member_id' => $this->goods_id]
+                'goods_id = :goods_id',
+                [':goods_id' => $this->goods_id]
             );
         }
         return false;
@@ -113,7 +113,6 @@ class Goods extends ActiveRecord
         $this->scenario="goods_delete";
         $this->load($data["goods_id"]=$goods_id,"");
         if($this->validate()) {
-
             if ($this->delete($goods_id)) {
                 return true;
             }

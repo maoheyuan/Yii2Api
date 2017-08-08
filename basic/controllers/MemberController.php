@@ -7,6 +7,7 @@ use yii\web\Controller;
 use yii\web\Response;
 use app\models\Member;
 use yii\helpers\ArrayHelper;
+use app\helper\helper;
 
 class MemberController extends Controller
 {
