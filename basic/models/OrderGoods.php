@@ -36,7 +36,7 @@ class OrderGoods extends ActiveRecord
     {
         return [
             ['ogoods_id', 'required', 'message' => '订单商品ID不能为空',"on"=>["ogoods_edit","ogoods_delete"]],
-            ['ogoods_order_sn', 'required', 'message' => '订单编号不能为空',"on"=>["ogoods_edit","ogoods_add"]],
+            ['ogoods_order_sn', 'required', 'message' => '订单编号不能为空',"on"=>["ogoods_edit","ogoods_add","ogoods_delete_by_ordersn"]],
             ['ogoods_goods_id','required',"message"=>'商品id不能为空',"on"=>["ogoods_edit","ogoods_add"]],
             ['ogoods_goods_name','required',"message"=>'商品名称不能为空',"on"=>["ogoods_edit","ogoods_add"]],
             ['ogoods_goods_price','required',"message"=>'商品数量不能为空',"on"=>["ogoods_add"]],
@@ -96,6 +96,7 @@ class OrderGoods extends ActiveRecord
     }
 
 
+
     public  function  ogoods_delete($ogoods_id){
 
         $this->scenario="ogoods_delete";
@@ -106,10 +107,26 @@ class OrderGoods extends ActiveRecord
             }
         }
         return false;
+    }
 
+
+    public  function ogoods_delete_by_ordersn($order_sn){
+        $this->scenario="ogoods_delete_by_ordersn";
+        $this->load($data["ogoods_order_sn"]=$order_sn,"");
+        if($this->validate()) {
+            if ($this->where(["ogoods_order_sn",$order_sn])->delete()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public  function  get_view_by_id($admin_id){
        return $this->findOne($admin_id);
+    }
+
+
+    public  function  get_order_goods_list($order_sn){
+        return $this->findAll(["order_sn",$order_sn]);
     }
 }

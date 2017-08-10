@@ -3,41 +3,45 @@
 namespace app\controllers;
 
 use Yii;
+use yii\base\Exception;
 use yii\web\Controller;
 use yii\web\Response;
 use app\models\Order;
+use app\models\OrderGoods;
 use yii\helpers\ArrayHelper;
 use app\helper\Helper;
 
 class OrderController extends Controller
 {
 
+    public   $tablePrefix="";
     public function init(){
         $this->enableCsrfValidation = false;
         Yii::$app->response->format=Response::FORMAT_JSON;
+        $this->tablePrefix= Yii::$app->db->tablePrefix;
     }
 
     public function actionIndex()
     {
         $start_time=Yii::$app->request->get("start_time");
         $end_time=Yii::$app->request->get("end_time");
-        $admin_name=Yii::$app->request->get("admin_name","");
+        $order_sn=Yii::$app->request->get("order_sn","");
         $page= Yii::$app->request->get("page",0);
         $page_limit= Yii::$app->request->get("page_limit",20);
-        $model=Admin::find();
+        $model=Order::find();
         if($start_time){
-            $model->andWhere([">=","admin_add_time",strtotime($start_time)]);
+            $model->andWhere([">=","order_add_time",strtotime($start_time)]);
         }
         if($end_time){
-            $model->andWhere(["<=","admin_add_time",strtotime($end_time)]);
+            $model->andWhere(["<=","order_add_time",strtotime($end_time)]);
         }
-        if($admin_name){
-            $model->where(["like","admin_name",$admin_name]);
+        if($order_sn){
+            $model->where(["like","order_sn",$order_sn]);
         }
         //echo $model->createCommand()->getRawSql();
-        $goodsCount=$model->count();
-        $goodsList =$model->offset($page*$page_limit)->limit($page_limit)->asArray()->all();
-        $createPage= Helper::create_page($goodsCount,$page,$page_limit);
+        $count=$model->count();
+        $dataList =$model->offset($page*$page_limit)->limit($page_limit)->asArray()->all();
+        $createPage= Helper::create_page($count,$page,$page_limit);
         return [
             'status'=>true,
             "prev_page"=>$createPage["prev_page"],
@@ -45,63 +49,158 @@ class OrderController extends Controller
             'count_page'=>$createPage["count_page"],
             'first_page'=>$createPage["first_page"],
             'last_page'=>$createPage["last_page"],
-            "list"=>$goodsList
+            "list"=>$dataList
+        ];
+    }
+
+
+    public  function actionGetOrderGoodsList(){
+        
+        $tablePrefix= Yii::$app->db->tablePrefix;
+        $start_time=Yii::$app->request->get("start_time");
+        $end_time=Yii::$app->request->get("end_time");
+        $order_sn=Yii::$app->request->get("order_sn","");
+        $page= Yii::$app->request->get("page",0);
+        $page_limit= Yii::$app->request->get("page_limit",20);
+        $orderModel= Order::find()
+            ->join(" LEFT JOIN",$tablePrefix."order",$tablePrefix."order.order_sn=".$tablePrefix."order_goods.ogoods_order_sn")
+            ->where(array());
+        if($start_time){
+            $orderModel->andWhere([">=",$tablePrefix."order.order_add_time",strtotime($start_time)]);
+        }
+        if($end_time){
+            $orderModel->andWhere(["<=",$tablePrefix."order.order_add_time",strtotime($end_time)]);
+        }
+        if($order_sn){
+            $orderModel->andWhere(["like","admin_name",$order_sn]);
+        }
+        $orderCount=$orderModel->count();
+        $orderGoodsList =$orderModel->offset($page*$page_limit)->limit($page_limit)->asArray()->all();
+
+        $createPage= Helper::create_page($orderCount,$page,$page_limit);
+        return [
+            'status'=>true,
+            "prev_page"=>$createPage["prev_page"],
+            "next_page"=>$createPage["next_page"],
+            'count_page'=>$createPage["count_page"],
+            'first_page'=>$createPage["first_page"],
+            'last_page'=>$createPage["last_page"],
+            "list"=>$orderGoodsList
         ];
     }
 
     public function actionCreate()
     {
 
-        $model=new Admin();
-        $post=Yii::$app->request->post();
-        $result=$model->admin_add($post);
-        if($result){
-            $returnData=Helper::returnData(true,["id"=>$result],"新增成功!");
-        }
-        else{
-            $error=Helper::getFirstError($model);
-            $returnData=Helper::returnData(false,$error,"新增成功!");
+        $tr = Yii::app()->db->beginTransaction();
+        try {
+
+            $post=Yii::$app->request->post();
+            $orderModel=new Order();
+            $orderData=$post;
+            $orderGoodsList=$post["goodsList"];
+            unset($orderData["goodsList"]);
+            $orderAddResult=$orderModel->order_add($orderData);
+            if(!$orderAddResult){
+                $error=Helper::getFirstError($orderModel);
+                E("订单新增失败!".$error);
+            }
+            $orderGoodsModel=new OrderGoods();
+            foreach($orderGoodsList as $key=>$value){
+                $orderGoodsAddResult=$orderGoodsModel->ogoods_add($value);
+                if(!$orderGoodsAddResult){
+                    $error=Helper::getFirstError($orderModel);
+                    E("商品新增失败!".$error);
+                }
+            }
+            $tr->commit();
+            $returnData=Helper::returnData(true,[],"新增成功!");
+        } catch (Exception $e) {
+            $tr->rollBack();
+            $returnData=Helper::returnData(false,$e->getMessage(),"新增成功!");
+
         }
         return $returnData;
 
     }
 
 
-    public function  actionUpdate($admin_id){
-        $model=new Admin();
-        $post=Yii::$app->request->post();
-        $post["admin_id"]=$admin_id;
-        $result=$model->admin_edit($post);
-        if($result){
+    public function  actionUpdate(){
 
-            $returnData=Helper::returnData(true,["id"=>$result],"修改成功!");
+        $tr = Yii::app()->db->beginTransaction();
+        try{
+            $post=Yii::$app->request->post();
+            $orderModel=new Order();
+            $orderData=$post;
+            $orderGoodsList=$post["goodsList"];
+            unset($orderData["goodsList"]);
+            $orderAddResult=$orderModel->order_edit($orderData);
+            if(!$orderAddResult){
+                $error=Helper::getFirstError($orderModel);
+                E("订单修改失败!".$error);
+            }
+            $orderGoodsModel=new OrderGoods();
+            foreach($orderGoodsList as $key=>$value){
+                $orderGoodsAddResult=$orderGoodsModel->ogoods_edit($value);
+                if(!$orderGoodsAddResult){
+                    $error=Helper::getFirstError($orderModel);
+                    E("商品修改败!".$error);
+                }
+            }
+            $tr->commit();
+            $returnData=Helper::returnData(true,[],"修改成功!");
         }
-        else{
-            $returnData=Helper::returnData(false,[],"修改失败!");
+        catch(Exception $e){
+
+            $tr->rollBack();
+            $returnData=Helper::returnData(false,$e->getMessage(),"修改失败!");
         }
+
         return $returnData;
     }
 
-    public  function  actionView($admin_id){
-        $model=new Admin();
-        $result=$model->get_view_by_id($admin_id);
-        $result=ArrayHelper::toArray($result);
-        if($result){
-            $returnData=Helper::returnData(true,$result,"查找成功!");
+    public  function  actionView($order_id){
+        $orderModel=new Order();
+        $orderInfo=$orderModel->get_view_by_id($order_id);
+        $orderInfo=ArrayHelper::toArray($orderInfo);
+        if($orderInfo){
+
+            $orderGoodsModel=new OrderGoods();
+            $orderGoodsList=$orderGoodsModel->get_order_goods_list($orderInfo["orderSn"]);
+
+            $orderGoodsList=ArrayHelper::toArray($orderGoodsList);
+        }
+        $orderInfo["order_goods_list"]=$orderGoodsList;
+        if($orderInfo){
+            $returnData=Helper::returnData(true,$orderInfo,"查找成功!");
         }
         else{
             $returnData=Helper::returnData(false,[],"查找失败!");
         }
         return $returnData;
     }
-    public function actionDelete($admin_id){
-        $model=new Admin();
-        $result=$model->goods_delete($admin_id);
-        if($result){
+
+    public function actionDelete($order_sn){
+        $tr=Yii::app()->db->beginTransaction();
+        try{
+            $orderModel=new Order();
+            $result=$orderModel->order_delete_by_ordresn($order_sn);
+            if(!$result){
+                $error=Helper::getFirstError($orderModel);
+                E("订单删除失败!".$error);
+            }
+            $orderGoodsModel=new OrderGoods();
+            $result=$orderGoodsModel->ogoods_delete_by_ordersn($order_sn);
+            if(!$result){
+                $error=Helper::getFirstError($orderGoodsModel);
+                E("订单商品删除失败!".$error);
+            }
+            $tr->commit();
             $returnData=Helper::returnData(true,["id"=>$result],"删除成功!");
         }
-        else{
-            $returnData=Helper::returnData(false,[],"删除失败!");
+        catch(Exception $e){
+            $tr->rollback();
+            $returnData=Helper::returnData(false,[],"删除失败!".$e->getMessage());
         }
         return $returnData;
     }

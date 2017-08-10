@@ -51,7 +51,7 @@ class Order extends ActiveRecord
     {
         return [
             ['order_id', 'required', 'message' => '订单ID不能为空',"on"=>["admin_edit","admin_delete"]],
-            ['order_sn', 'required', 'message' => '订单编号不能为空',"on"=>["admin_edit","admin_add"]],
+            ['order_sn', 'required', 'message' => '订单编号不能为空',"on"=>["admin_edit","admin_add","order_delete_by_ordresn"]],
             ['order_member_id','required',"message"=>'会员编号不能为空',"on"=>["admin_edit","admin_add"]],
             ['order_money','required',"message"=>'订单价格不能为空',"on"=>["admin_edit","admin_add"]],
             ['order_pay_type','required',"message"=>'支付类型不能为空',"on"=>["admin_add"]],
@@ -148,6 +148,20 @@ class Order extends ActiveRecord
         $this->load($data["order_id"]=$order_id,"");
         if($this->validate()) {
             if ($this->delete($order_id)) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+
+    public  function  order_delete_by_ordresn($order_sn){
+
+        $this->scenario="order_delete_by_ordresn";
+        $this->load($data["order_sn"]=$order_sn,"");
+        if($this->validate()) {
+            if ($this->where(["order_sn",$order_sn])->delete()) {
                 return true;
             }
         }
