@@ -19,7 +19,6 @@ class CategoryController extends Controller
 
     public function actionIndex()
     {
-
         $page= Yii::$app->request->get("page");
         $page_limit= Yii::$app->request->get("page_limit");
         $memberCount=Category::find()->count();
@@ -76,7 +75,6 @@ class CategoryController extends Controller
         return $returnData;
     }
 
-
     public function actionDelete($category_id){
         $model=new Category();
         $result=$model->category_delete($category_id);
@@ -90,7 +88,6 @@ class CategoryController extends Controller
     }
 
     protected  function  getFirstError($model){
-
       return  array_values($model->getFirstErrors())[0];
     }
 
