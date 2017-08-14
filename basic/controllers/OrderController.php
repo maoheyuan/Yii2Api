@@ -55,7 +55,7 @@ class OrderController extends Controller
 
 
     public  function actionGetOrderGoodsList(){
-        
+
         $tablePrefix= Yii::$app->db->tablePrefix;
         $start_time=Yii::$app->request->get("start_time");
         $end_time=Yii::$app->request->get("end_time");

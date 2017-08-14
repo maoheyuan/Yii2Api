@@ -107,7 +107,4 @@ class GoodsController extends Controller
         return $returnData;
     }
 
-
-
-
 }
