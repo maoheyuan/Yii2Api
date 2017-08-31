@@ -39,14 +39,28 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
+
         'urlManager' => [
-            'enablePrettyUrl' => true,
+            'class' => 'yii\web\UrlManager',
+            // Disable index.php
             'showScriptName' => false,
-            'rules' => [
-            ],
+            // Disable r= routes
+            'enablePrettyUrl' => true,
+            'rules' => array(
+
+            ),
         ],
-        */
+
+    ],
+
+    'modules' => [
+
+        'admin' => [
+
+            'class' => 'app\modules\admin\Admin',
+
+        ],
+
     ],
     'params' => $params,
 ];

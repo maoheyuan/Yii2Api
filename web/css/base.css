@@ -1,0 +1,154 @@
+body {
+    min-width: 100%;
+    min-height: 100%;
+    padding-left: 170px;
+    -webkit-font-smoothing: antialiased
+}
+
+.textRight{
+    text-align: right;
+}
+
+.pd5{
+    padding: 5px;
+}
+
+.pdl0{
+    padding-left:0;
+}
+.pdl2{
+    padding-left:2px;
+}
+.pdl5{
+    padding-left: 5px;
+}
+.ml5{
+    margin-left: 5px;
+}
+
+.ml10{
+    margin-left: 10px;
+}
+
+.mt10{
+    margin-top: 10px;
+
+}
+
+.mt20{
+    margin-top: 20px;
+
+}
+
+
+.quit{
+
+    width: 130px;
+    float: right;
+}
+.navLeftBar{
+
+    width: 170px;
+    position: fixed;
+    top:0;
+    left: 0;
+    bottom: 0;
+    background: #464068;
+}
+
+.navLeftBar > .list-group{
+    margin-bottom: 0px;
+}
+
+.navLeftBar .list-group .list-group-item{
+
+    background-color: transparent;
+    border: 0px;
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.navLeftBar .list-group .web_log{
+
+    padding: 10px !important;
+}
+
+.navLeftBar .web_log img{
+
+    width: 150px;
+}
+.navLeftBar .list-group .part-line{
+
+    margin-top: 10px;
+    border-top: 1px solid #3c375a;
+    padding-top: 10px;
+}
+
+
+.breadcrumb {
+    padding: 18px 15px;
+    margin-bottom: 0px;
+}
+
+
+.pagination {
+
+     margin: 0px 0px;
+    margin-right: 10px;
+    height: auto;
+
+}
+.Page{
+    display: block;
+    height: auto;
+}
+.Page .row-num{
+    float: right;
+    display: inline-block;
+    padding: 6px 12px;
+    margin-left: -1px;
+    color: #000000;
+    text-decoration: none;
+    background-color: #fff;
+}
+
+
+
+/*-----------------------add-------------------------*/
+
+
+.create-page {
+    padding-left: 0px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.create-page .form-horizontal .form-group {
+     margin-right: 0px;
+     margin-left: 0px;
+}
+
+/*-----------------------login-------------------------*/
+
+.login{
+    width:300px;
+    height: 300px;
+    position: absolute;
+    left:50%;
+    top:50%;
+    padding: 20px;
+    padding-top: 10px;
+    margin-top: -200px;
+    margin-left: -150px;
+    background-color: #f9f7f7;
+    border: 1px solid #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+    color: #ffffff;
+    background: #464068;
+}
+
+/*--分页样式--*/
+.pagination .current{
+     background-color: #4c64a2;
+     color: #ffffff;
+ }

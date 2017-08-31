@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace app\controllers\admin;
 
 use Yii;
 use yii\web\Controller;
@@ -14,7 +14,6 @@ class AdminController extends Controller
 
     public function init(){
         $this->enableCsrfValidation = false;
-        Yii::$app->response->format=Response::FORMAT_JSON;
     }
 
     public function actionIndex()
@@ -38,15 +37,10 @@ class AdminController extends Controller
         $goodsCount=$model->count();
         $goodsList =$model->offset($page*$page_limit)->limit($page_limit)->asArray()->all();
         $createPage= Helper::create_page($goodsCount,$page,$page_limit);
-        return [
-            'status'=>true,
-            "prev_page"=>$createPage["prev_page"],
-            "next_page"=>$createPage["next_page"],
-            'count_page'=>$createPage["count_page"],
-            'first_page'=>$createPage["first_page"],
-            'last_page'=>$createPage["last_page"],
-            "list"=>$goodsList
-        ];
+
+        $controllerID = Yii::$app->controller->id;
+        //var_dump($goodsList);
+        return $this->render("index",["dataList"=>$goodsList]);
     }
 
     public function actionCreate()

@@ -81,6 +81,7 @@ class Controller extends Component implements ViewContextInterface
      */
     public function __construct($id, $module, $config = [])
     {
+
         $this->id = $id;
         $this->module = $module;
         parent::__construct($config);
@@ -379,6 +380,8 @@ class Controller extends Component implements ViewContextInterface
     public function render($view, $params = [])
     {
         $content = $this->getView()->render($view, $params, $this);
+
+
         return $this->renderContent($content);
     }
 
@@ -392,7 +395,10 @@ class Controller extends Component implements ViewContextInterface
     public function renderContent($content)
     {
         $layoutFile = $this->findLayoutFile($this->getView());
+
         if ($layoutFile !== false) {
+
+
             return $this->getView()->renderFile($layoutFile, ['content' => $content], $this);
         }
         return $content;
