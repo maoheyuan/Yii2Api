@@ -22,7 +22,6 @@ class PublicController extends Controller
     {
         return $this->render('index');
     }
-
     public  function  actionLogin(){
 
         $adminName=Yii::$app->request->post("adminName","");
@@ -50,7 +49,7 @@ class PublicController extends Controller
                 return $this->render("login");
             }
             $session->set('adminInfo', $adminInfo);
-            return $this->redirect(["default/index"]);
+            return $this->redirect(["index/index"]);
         }
         return $this->render("login",["adminName"=>$adminName]);
     }

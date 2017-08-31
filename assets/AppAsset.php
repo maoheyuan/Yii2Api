@@ -23,8 +23,10 @@ class AppAsset extends AssetBundle
         'css/base.css',
     ];
     public $js = [
+        'plug/layer/layer.js',
+        'plug/My97DatePicker/WdatePicker.js',
         'js/ajaxfileupload.js',
-        'base.js'
+        'js/base.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

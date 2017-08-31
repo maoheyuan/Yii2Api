@@ -79,3 +79,19 @@ $(function(){
         mhy.deleteData(this);
     });
 });
+
+
+
+
+ $("#reset").click(function(){
+
+     $('input[name="startTime"]').attr('value',"");
+     $('input[name="endTime"]').attr('value',"");
+     $('select[name="limit"] option').each(function(){
+         $(this).removeAttr("selected");
+     });
+     $('select[name="key"] option').each(function(){
+         $(this).removeAttr("selected");
+     });
+     $('input[name="content"]').attr('value',"");
+ });

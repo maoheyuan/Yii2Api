@@ -4,48 +4,59 @@ namespace app\modules\admin\controllers;
 
 use Yii;
 use yii\web\Controller;
-use yii\web\Response;
 use app\models\Admin;
 use yii\helpers\ArrayHelper;
 use app\helper\Helper;
+use app\helper\page;
 
 class AdminController extends Controller
 {
     public  $layout = 'main';
 
+    public  $pageTheme="";
     public function init(){
         $this->enableCsrfValidation = false;
+        $this->pageTheme=Yii::$app->params['pageTheme'];
     }
     public function actionIndex()
     {
-        $start_time=Yii::$app->request->get("start_time");
-        $end_time=Yii::$app->request->get("end_time");
-        $admin_name=Yii::$app->request->get("admin_name","");
-        $page= Yii::$app->request->get("page",0);
-        $page_limit= Yii::$app->request->get("page_limit",20);
+        $getData=Yii::$app->request->get();
+        $startTime=Yii::$app->request->get("startTime");
+        $endTime=Yii::$app->request->get("endTime");
+        $key=Yii::$app->request->get("key","");
+        $content=Yii::$app->request->get("content","");
+        $pageLimit= Yii::$app->request->get("limit");
+        if($pageLimit=="") {
+            $pageLimit=20;
+        }
         $model=Admin::find();
-        if($start_time){
-            $model->andWhere([">=","admin_add_time",strtotime($start_time)]);
+        if($startTime){
+            $model->andWhere([">=","admin_add_time",strtotime($startTime)]);
         }
-        if($end_time){
-            $model->andWhere(["<=","admin_add_time",strtotime($end_time)]);
+        if($endTime){
+            $model->andWhere(["<=","admin_add_time",strtotime($endTime)]);
         }
-        if($admin_name){
-            $model->where(["like","admin_name",$admin_name]);
+        if($content){
+            if($key=="admin_id"){
+                $model->where(["admin_id"=>$content]);
+            }
+            else{
+                $model->where(["like","admin_name",$content]);
+            }
         }
-        //echo $model->createCommand()->getRawSql();
-        $goodsCount=$model->count();
-        $goodsList =$model->offset($page*$page_limit)->limit($page_limit)->asArray()->all();
-        $createPage= Helper::create_page($goodsCount,$page,$page_limit);
-
-        $controllerID = Yii::$app->controller->id;
-        //var_dump($goodsList);
-        return $this->render("index",["dataList"=>$goodsList]);
+        $count=$model->count();
+        $page       = new page($count,$pageLimit);
+        if($this->pageTheme!=""){
+            $page->setConfig('theme',$this->pageTheme);
+        }
+        $show       = $page->show();
+        $goodsList =$model->offset($page->firstRow)->limit($page->listRows)->asArray()->all();
+        echo $model->createCommand()->getRawSql();
+        return $this->render("index", ["goodsList"=>$goodsList,"page"=>$show,"request"=>$getData]);
     }
 
     public function actionCreate()
     {
-
         $model=new Admin();
         $post=Yii::$app->request->post();
         $result=$model->admin_add($post);
@@ -57,7 +68,6 @@ class AdminController extends Controller
             $returnData=Helper::returnData(false,$error,"新增成功!");
         }
         return $returnData;
-
     }
 
 
