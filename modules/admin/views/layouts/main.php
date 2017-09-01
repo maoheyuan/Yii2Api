@@ -6,7 +6,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\assets\AppAsset;
-
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
@@ -14,12 +13,11 @@ AppAsset::register($this);
 <html lang="<?= Yii::$app->language ?>">
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-
     <style type="text/css">
         .laydate_box, .laydate_box * {
             box-sizing:content-box;
@@ -80,8 +78,9 @@ AppAsset::register($this);
     </div >
 
 </div>
-<?= $content ?>
-
+<div class="main">
+    <?= $content ?>
+</div>
 <?php $this->endBody() ?>
 </body>
 </html>

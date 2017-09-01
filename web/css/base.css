@@ -1,18 +1,24 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
+/*a{text-decoration: none; }*/
+/*.navbar-form{margin: 0px 8px\0;}*/
+.navbar-form{margin: 0px 8px\0;}
+/*.collapse{padding-left: 0px\0 !important;}*/
 body {
-    min-width: 100%;
     min-height: 100%;
-    padding-left: 170px;
+    width: auto;
+    padding-left: 0px;
     -webkit-font-smoothing: antialiased
 }
 
 .textRight{
     text-align: right;
 }
-
 .pd5{
     padding: 5px;
 }
-
 .pdl0{
     padding-left:0;
 }
@@ -25,21 +31,16 @@ body {
 .ml5{
     margin-left: 5px;
 }
-
 .ml10{
     margin-left: 10px;
 }
-
 .mt10{
     margin-top: 10px;
-
 }
-
 .mt20{
     margin-top: 20px;
 
 }
-
 
 .quit{
 
@@ -56,23 +57,30 @@ body {
     background: #464068;
 }
 
-.navLeftBar > .list-group{
+.list-group{
+    display: block;
+    height: auto;
+    width: 100%;
     margin-bottom: 0px;
 }
-
-.navLeftBar .list-group .list-group-item{
+.list-group-item{
+    display: block;
+    height: 40px;
+    line-height: 40px;
+    text-align: left;
+    padding-left:36px ;
+}
+.navLeftBar .list-group-item{
 
     background-color: transparent;
     border: 0px;
     color: #ffffff;
     font-size: 15px;
 }
-
-.navLeftBar .list-group .web_log{
+.navLeftBar  .web_log{
 
     padding: 10px !important;
 }
-
 .navLeftBar .web_log img{
 
     width: 150px;
@@ -83,20 +91,38 @@ body {
     border-top: 1px solid #3c375a;
     padding-top: 10px;
 }
-
-
+.main{
+    padding-left: 170px;
+}
 .breadcrumb {
     padding: 18px 15px;
     margin-bottom: 0px;
+
+    background-color: #f5f5f5;
+}
+.breadcrumb span{
+    height: 100px;
+    float: left;
+}
+.navbar{
+    display:block;
+    padding: 10px;
+}
+.button{
+    display: inline-block;
+    padding: 10px;
+
 }
 
 
-.pagination {
+.navbar-form .form-group{
+    float: left;
+}
 
-     margin: 0px 0px;
+.pagination {
+    margin: 0px 0px;
     margin-right: 10px;
     height: auto;
-
 }
 .Page{
     display: block;
@@ -112,11 +138,6 @@ body {
     background-color: #fff;
 }
 
-
-
-/*-----------------------add-------------------------*/
-
-
 .create-page {
     padding-left: 0px;
     -webkit-font-smoothing: antialiased;
@@ -126,8 +147,6 @@ body {
      margin-right: 0px;
      margin-left: 0px;
 }
-
-/*-----------------------login-------------------------*/
 
 .login{
     width:300px;
@@ -147,7 +166,6 @@ body {
     background: #464068;
 }
 
-/*--分页样式--*/
 .pagination .current{
      background-color: #4c64a2;
      color: #ffffff;

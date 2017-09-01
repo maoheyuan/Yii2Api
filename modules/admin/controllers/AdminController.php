@@ -51,23 +51,27 @@ class AdminController extends Controller
         }
         $show       = $page->show();
         $goodsList =$model->offset($page->firstRow)->limit($page->listRows)->asArray()->all();
-        echo $model->createCommand()->getRawSql();
+        //echo $model->createCommand()->getRawSql();
         return $this->render("index", ["goodsList"=>$goodsList,"page"=>$show,"request"=>$getData]);
     }
 
-    public function actionCreate()
+    public function actionAdd()
     {
-        $model=new Admin();
-        $post=Yii::$app->request->post();
-        $result=$model->admin_add($post);
-        if($result){
-            $returnData=Helper::returnData(true,["id"=>$result],"新增成功!");
+        if(Yii::$app->request->isPost){
+            $model=new Admin();
+            $post=Yii::$app->request->post();
+            $result=$model->admin_add($post);
+            if($result){
+                $returnData=Helper::returnData(true,["id"=>$result],"新增成功!");
+            }
+            else{
+                $error=Helper::getFirstError($model);
+                $returnData=Helper::returnData(false,$error,"新增成功!");
+            }
         }
         else{
-            $error=Helper::getFirstError($model);
-            $returnData=Helper::returnData(false,$error,"新增成功!");
+            return $this->render("add");
         }
-        return $returnData;
     }
 
 
