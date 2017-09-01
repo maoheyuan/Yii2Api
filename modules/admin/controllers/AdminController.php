@@ -11,7 +11,7 @@ use app\helper\page;
 
 class AdminController extends Controller
 {
-    public  $layout = 'main';
+
 
     public  $pageTheme="";
     public function init(){
@@ -20,6 +20,7 @@ class AdminController extends Controller
     }
     public function actionIndex()
     {
+        $this->layout = 'main';
         $getData=Yii::$app->request->get();
         $startTime=Yii::$app->request->get("startTime");
         $endTime=Yii::$app->request->get("endTime");
@@ -57,16 +58,24 @@ class AdminController extends Controller
 
     public function actionAdd()
     {
+        $this->layout = 'mainNotNavAndFooter';
+        $session=Yii::$app->session;
         if(Yii::$app->request->isPost){
             $model=new Admin();
             $post=Yii::$app->request->post();
             $result=$model->admin_add($post);
+
             if($result){
-                $returnData=Helper::returnData(true,["id"=>$result],"新增成功!");
+                return $this->redirect(["admin/index"]);
             }
             else{
                 $error=Helper::getFirstError($model);
-                $returnData=Helper::returnData(false,$error,"新增成功!");
+                $session->setFlash('loginError',$error);
+
+                echo Yii::$app->request->getReferrer();
+               return $this->goBack(Yii::$app->request->getReferrer());
+
+
             }
         }
         else{

@@ -1,6 +1,15 @@
-<include file="Public/header" />
-<form class="form-horizontal mt20" enctype="multipart/form-data" method="post" action="{:U('admin/add')}">
+<?php
+use yii\helpers\Url;
+?>
 
+<?php  if(Yii::$app->session->getFlash("loginError")) {?>
+    <div class="form-group">
+
+        <p><?= Yii::$app->session->getFlash("loginError") ?></p>
+    </div>
+<?php };?>
+
+<form class="form-horizontal " enctype="multipart/form-data" method="post" action="<?= Url::toRoute(['admin/add'])?>">
     <div class="form-group">
         <label for="admin_name" class="col-sm-2 control-label"><span aria-hidden="true">&times;</span>管理员名称：</label>
         <div class="col-sm-8">
@@ -50,4 +59,3 @@
 <script type="text/javascript">
     $("#body").addClass("create-page");
 </script>
-<include file="Public/footer" />

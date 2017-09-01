@@ -6,6 +6,7 @@
 /*.navbar-form{margin: 0px 8px\0;}*/
 .navbar-form{margin: 0px 8px\0;}
 /*.collapse{padding-left: 0px\0 !important;}*/
+
 body {
     min-height: 100%;
     width: auto;
@@ -138,15 +139,19 @@ body {
     background-color: #fff;
 }
 
-.create-page {
-    padding-left: 0px;
-    -webkit-font-smoothing: antialiased;
+.form-horizontal{
+    margin-left: 2px;
+
 }
 
-.create-page .form-horizontal .form-group {
+
+ .form-horizontal .form-group {
      margin-right: 0px;
      margin-left: 0px;
 }
+
+
+
 
 .login{
     width:300px;
