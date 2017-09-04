@@ -58,7 +58,7 @@ class Admin extends ActiveRecord
 
     public  function  admin_edit($data, $scenario = 'admin_edit'){
         $this->scenario = $scenario;
-        $data["admin_edit_time"]=time();
+        $data["admin_eidt_time"]=time();
 
         $data["admin_login_num"]=$data["admin_login_num"]+1;
         $this->load($data,"");
@@ -71,7 +71,7 @@ class Admin extends ActiveRecord
                     'admin_eidt_time'       =>  $data["admin_eidt_time"]
                 ],
                 'admin_id = :admin_id',
-                [':admin_id' => $this->admin_id]
+                [':admin_id' => $data['admin_id']]
             );
         }
         return false;

@@ -9,7 +9,7 @@ use yii\helpers\ArrayHelper;
 use app\helper\Helper;
 use app\helper\page;
 
-class AdminController extends Controller
+class AdminController extends BaseController
 {
 
 
@@ -59,23 +59,16 @@ class AdminController extends Controller
     public function actionAdd()
     {
         $this->layout = 'mainNotNavAndFooter';
-        $session=Yii::$app->session;
         if(Yii::$app->request->isPost){
             $model=new Admin();
             $post=Yii::$app->request->post();
             $result=$model->admin_add($post);
-
             if($result){
-                return $this->redirect(["admin/index"]);
+                return $this->sucess("新增成功",'/admin/admin/add');
             }
             else{
                 $error=Helper::getFirstError($model);
-                $session->setFlash('loginError',$error);
-
-                echo Yii::$app->request->getReferrer();
-               return $this->goBack(Yii::$app->request->getReferrer());
-
-
+                return $this->error($error);
             }
         }
         else{
@@ -85,18 +78,25 @@ class AdminController extends Controller
 
 
     public function  actionUpdate($admin_id){
+        $this->layout = 'mainNotNavAndFooter';
         $model=new Admin();
-        $post=Yii::$app->request->post();
-        $post["admin_id"]=$admin_id;
-        $result=$model->admin_edit($post);
-        if($result){
-
-            $returnData=Helper::returnData(true,["id"=>$result],"修改成功!");
+        $adminInfo=$model::findOne(['admin_id'=>$admin_id]);
+        if(Yii::$app->request->isPost){
+            $post=Yii::$app->request->post();
+            $post["admin_id"]=$admin_id;
+            $post["admin_login_num"]=$adminInfo->admin_login_num;
+            $result=$model->admin_edit($post);
+            if($result){
+                return $this->sucess("修改成功");
+            }
+            else{
+                $error=Helper::getFirstError($model);
+                return $this->sucess($error." 修改失败!");
+            }
         }
         else{
-            $returnData=Helper::returnData(false,[],"修改失败!");
+            return $this->render("update",['adminInfo'=>$adminInfo]);
         }
-        return $returnData;
     }
 
     public  function  actionView($admin_id){
@@ -111,6 +111,7 @@ class AdminController extends Controller
         }
         return $returnData;
     }
+    
     public function actionDelete($admin_id){
         $model=new Admin();
         $result=$model->goods_delete($admin_id);
