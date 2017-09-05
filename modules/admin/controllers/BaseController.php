@@ -8,14 +8,11 @@ use yii\helpers\Url;
 
 class BaseController extends Controller
 {
-
-
     public  $pageTheme="";
     public function init(){
         $this->enableCsrfValidation = false;
         $this->pageTheme=Yii::$app->params['pageTheme'];
     }
-
     public function sucess($message="",$url="",$waitSecond=5)
     {
         if($url==""){
