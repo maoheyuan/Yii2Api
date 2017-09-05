@@ -12,7 +12,6 @@ use app\helper\page;
 class AdminController extends BaseController
 {
 
-
     public  $pageTheme="";
     public function init(){
         $this->enableCsrfValidation = false;
@@ -111,7 +110,7 @@ class AdminController extends BaseController
         }
         return $returnData;
     }
-    
+
     public function actionDelete($admin_id){
         $model=new Admin();
         $result=$model->goods_delete($admin_id);

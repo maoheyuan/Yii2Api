@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\models;
 
+
 use yii\db\ActiveRecord;
 use Yii;
 class Admin extends ActiveRecord
@@ -10,45 +11,46 @@ class Admin extends ActiveRecord
 
     public static function tableName()
     {
-        return "{{%admin}}";
+        return "{{%area}}";
     }
 
-    /*CREATE TABLE `mhy_admin` (
-      `admin_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '管理员ID',
-      `admin_permission` varchar(3000) DEFAULT NULL COMMENT '管理权限',
-      `admin_name` varchar(20) NOT NULL COMMENT '管理员名称',
-      `admin_password` varchar(32) NOT NULL DEFAULT '' COMMENT '管理员密码',
-      `admin_login_time` int(10) NOT NULL DEFAULT '0' COMMENT '登录时间',
-      `admin_login_num` int(11) NOT NULL DEFAULT '0' COMMENT '登录次数',
-      `admin_is_super` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否超级管理员',
-      `admin_add_time` int(11) DEFAULT '0' COMMENT '新增时间',
-      `admin_eidt_time` int(11) DEFAULT '0' COMMENT '修改时间',
-      PRIMARY KEY (`admin_id`),
-      KEY `member_id` (`admin_id`) USING BTREE
-    ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='管理员表';*/
+    /*
+     CREATE TABLE `mhy_area` (
+      `area_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '地区ID',
+      `area_name` char(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '地区名称',
+      `area_parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '上级ID',
+      `area_add_id` int(11) NOT NULL DEFAULT '0' COMMENT '创建人ID',
+      `area_sort` int(11) DEFAULT '100',
+      `area_level` int(11) NOT NULL COMMENT '级别 0省 1市 2区/县',
+      `area_edit_time` int(11) DEFAULT '0' COMMENT '修改时间',
+      `area_add_time` int(11) DEFAULT NULL COMMENT '新增时间',
+      PRIMARY KEY (`area_id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='地区管理表';
+    */
     public function rules()
     {
         return [
-            ['admin_id', 'required', 'message' => '管理员ID不能为空',"on"=>["admin_edit","admin_delete"]],
-            ['admin_permission', 'required', 'message' => '管理权限不能为空',"on"=>["admin_edit","admin_add"]],
-            ['admin_name','required',"message"=>'管理员名称不能为空',"on"=>["admin_edit","admin_add"]],
-            ['admin_is_super','required',"message"=>'是否超级管理员不能为空',"on"=>["admin_edit","admin_add"]],
-            ['admin_add_time','required',"message"=>'添加时间不能为空',"on"=>["admin_add"]],
-            ['admin_eidt_time','required',"message"=>'修改时间不能为空',"on"=>["admin_edit"]],
+            ['area_id', 'required', 'message' => '地区ID不能为空',"on"=>["admin_edit","admin_delete"]],
+            ['area_name', 'required', 'message' => '地区名称不能为空',"on"=>["admin_edit","admin_add"]],
+            ['area_parent_id','required',"message"=>'创建人ID不能为空',"on"=>["admin_edit","admin_add"]],
+            ['area_sort','required',"message"=>'排序不能为空',"on"=>["admin_edit","admin_add"]],
+            ['area_level','required',"message"=>'级别不能为空',"on"=>["admin_edit","admin_add"]],
+            ['area_add_time','required',"message"=>'添加时间不能为空',"on"=>["admin_add"]],
+            ['area_edit_time','required',"message"=>'修改时间不能为空',"on"=>["admin_edit"]],
 
         ];
     }
 
 
-    public function admin_add($data=array(), $scenario ='admin_add')
+    public function area_add($data=array(), $scenario ='area_add')
     {
         $this->scenario = $scenario;
-        $data["admin_add_time"]=time();
+        $data["area_add_time"]=time();
         $this->load($data,"");
         if ($this->validate()){
             $result=$this->save(false);
             if ($result) {
-                return $this->admin_id;
+                return $this->area_id;
             }
             return false;
         }
@@ -56,34 +58,35 @@ class Admin extends ActiveRecord
     }
 
 
-    public  function  admin_edit($data, $scenario = 'admin_edit'){
+    public  function  area_edit($data, $scenario = 'area_edit'){
         $this->scenario = $scenario;
-        $data["admin_edit_time"]=time();
+        $data["area_edit_time"]=time();
 
-        $data["admin_login_num"]=$data["admin_login_num"]+1;
         $this->load($data,"");
         if ($this->validate()) {
             return (bool)$this->updateAll(
                 [
-                    'admin_permission'   =>  $data["admin_permission"],
-                    'admin_name'     =>  $data["admin_name"],
-                    'admin_is_super'         =>  $data["admin_is_super"],
-                    'admin_eidt_time'       =>  $data["admin_eidt_time"]
+                    'area_name'   =>  $data["area_name"],
+                    'area_parent_id'     =>  $data["area_parent_id"],
+                    'area_sort'         =>  $data["area_sort"],
+                    'area_level'       =>  $data["area_level"],
+                    'area_edit_time'         =>  $data["area_edit_time"]
+
                 ],
-                'admin_id = :admin_id',
-                [':admin_id' => $this->admin_id]
+                'area_id = :area_id',
+                [':area_id' => $this->area_id]
             );
         }
         return false;
     }
 
 
-    public  function  admin_delete($admin_id){
+    public  function  area_delete($area_id){
 
-        $this->scenario="admin_delete";
-        $this->load($data["admin_id"]=$admin_id,"");
+        $this->scenario="area_delete";
+        $this->load($data["area_id"]=$area_id,"");
         if($this->validate()) {
-            if ($this->delete($admin_id)) {
+            if ($this->delete($area_id)) {
                 return true;
             }
         }
@@ -91,7 +94,7 @@ class Admin extends ActiveRecord
 
     }
 
-    public  function  get_view_by_id($admin_id){
-       return $this->findOne($admin_id);
+    public  function  get_view_by_id($area_id){
+        return $this->findOne($area_id);
     }
 }
