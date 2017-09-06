@@ -55,6 +55,7 @@ class AdminController extends BaseController
         return $this->render("index", ["goodsList"=>$goodsList,"page"=>$show,"request"=>$getData]);
     }
 
+
     public function actionAdd()
     {
         $this->layout = 'mainNotNavAndFooter';

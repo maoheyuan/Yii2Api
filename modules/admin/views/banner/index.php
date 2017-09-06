@@ -20,7 +20,7 @@ use yii\helpers\Url;
 
                 <div class="btn-group form-group" >
 
-                    <button type="button" class="btn btn-primary create" title="管理员新增" data-url="{:U('admin/add')}"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-primary create" title="轮播图新增" data-url="<?= Url::toRoute(['banner/add'])?>"><i class="fa fa-plus" aria-hidden="true"></i></button>
 
                 </div>
                 <div class="form-group">
@@ -43,8 +43,8 @@ use yii\helpers\Url;
                 <div class="form-group">
                     <select name="key" class="form-control">
                         <option value="">请选择</option>
-                        <option value="admin_id"     <?= isset($request['key'])&&$request['key'] == 'admin_id' ?"selected":"" ?> >管理员编号</option>
-                        <option value="admin_name"   <?=isset($request['key'])&&$request['key'] == 'admin_name' ?"selected":"" ?> >管理员名称</option>
+                        <option value="banner_id"     <?= isset($request['key'])&&$request['key'] == 'banner_id' ?"selected":"" ?> >轮播图编号</option>
+                        <option value="banner_name"   <?=isset($request['key'])&&$request['key'] == 'banner_name' ?"selected":"" ?> >轮播图名称</option>
                     </select>
                 </div>
 
@@ -68,50 +68,45 @@ use yii\helpers\Url;
         <tr class="info">
             <th><input id="select-all" type="checkbox"></th>
             <th >编号</th>
-            <th>管理员名称</th>
-            <th >登录时间</th>
-            <th >登录次数</th>
-            <th >是否超级管理员</th>
+            <th >名称</th>
+            <th >图片</th>
+            <th >状态</th>
+            <th >所属分类</th>
+            <th>有效开始时间</th>
+            <th>有效结束时间</th>
             <th>新增时间</th>
             <th>修改时间</th>
+            <th>排序</th>
             <th>操作</th>
         </tr>
         </thead>
         <tbody>
-        <?php foreach($goodsList as $key=>$vo){ ?>
-            <tr id="row<?=$vo['admin_id']?>">
+        <?php foreach($memberList as $key=>$vo){ ?>
+            <tr id="row<?=$vo['banner_id']?>">
                 <td><input  type="checkbox"></td>
-                <td><?=$vo["admin_id"]?></td>
-                <td><?=$vo["admin_name"]?></td>
-                <td><?=$vo["admin_login_time"]?></td>
-                <td><?=$vo["admin_login_num"]?></td>
-                <td><?=$vo["admin_is_super"]?></td>
-                <td><?=$vo["admin_add_time"]?></td>
-                <td><?=$vo["admin_eidt_time"]?></td>
+                <td><?=$vo["banner_id"]?></td>
+                <td><?=$vo["banner_name"]?></td>
+                <td><?=$vo["banner_image"]?></td>
+                <td><?=$vo["banner_status"]?></td>
+                <td><?=$vo["banner_category"]?></td>
+                <td><?=$vo["banner_start_time"]?></td>
+                <td><?=$vo["banner_end_time"]?></td>
+                <td><?=$vo["banner_add_time"]?></td>
+                <td><?=$vo["banner_edit_time"]?></td>
+                <td><?=$vo["banner_sort"]?></td>
                 <td>
-                    <a  class="btn btn-warning  btn-sm update" title="管理员修改" data-url="<?= Url::toRoute(['admin/update'])?>?admin_id=<?= $vo['admin_id']?>"><i class="fa fa-edit" aria-hidden="true"></i> </a>
-                    <a  class="btn btn-danger   btn-sm delete"  title="管理员删除" data-id="<?= $vo['admin_id']?>" data-url="<?= Url::toRoute(['admin/delete'])?>?admin_id=<?= $vo['admin_id']?>"> <i class="fa fa-trash-o fa-lg"></i></a>
+                    <a  class="btn btn-warning  btn-sm update" title="管理员修改" data-url="<?= Url::toRoute(['banner/update'])?>?banner_id=<?= $vo['banner_id']?>"><i class="fa fa-edit" aria-hidden="true"></i> </a>
+                    <a  class="btn btn-danger   btn-sm delete"  title="管理员删除" data-id="<?= $vo['banner_id']?>" data-url="<?= Url::toRoute(['banner/delete'])?>?banner_id=<?= $vo['banner_id']?>"> <i class="fa fa-trash-o fa-lg"></i></a>
                 </td>
             </tr>
         <?php } ?>
         </tbody>
     </table>
-    <nav class="Page textRight" aria-label="Page navigation">
-        <?=$page?>
-    </nav>
+    <div class="pagination pull-right">
+        <?php echo yii\widgets\LinkPager::widget([
+            'pagination' => $pager,
+            'prevPageLabel' => '&#8249;',
+            'nextPageLabel' => '&#8250;',
+        ]); ?>
+    </div>
 </div>
-<script type="application/javascript">
-    (function($){
-        $("#reset").click(function(){
-            $('input[name="startTime"]').attr('value',"");
-            $('input[name="endTime"]').attr('value',"");
-            $('select[name="limit"] option').each(function(){
-                $(this).removeAttr("selected");
-            });
-            $('select[name="key"] option').each(function(){
-                $(this).removeAttr("selected");
-            });
-            $('input[name="content"]').attr('value',"");
-        });
-    })
-</script>

@@ -25,9 +25,12 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-<div class="container">
+<div class="pd5">
     <?= $content ?>
 </div>
+
+
+
 
 <?php $this->endBody() ?>
 </body>

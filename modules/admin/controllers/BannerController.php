@@ -5,46 +5,68 @@ namespace app\modules\admin\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
-use app\models\Banner;
+
 use yii\helpers\ArrayHelper;
 use app\helper\helper;
-
+use yii\data\Pagination;
+use app\modules\admin\models\Banner;
+use app\modules\admin\models\BannerForm;
 class BannerController extends Controller
 {
 
-    public function init(){
-        $this->enableCsrfValidation = false;
+    public function actionIndex(){
+
+
+        $this->layout="main";
+        $getData=Yii::$app->request->get();
+        $startTime=Yii::$app->request->get("startTime","");
+        $endTime=Yii::$app->request->get("endTime");
+        $key=Yii::$app->request->get("key","");
+        $content=Yii::$app->request->get("content","");
+        $pageLimit=Yii::$app->request->get("limit","");
+        if($pageLimit){
+            $pageLimit=20;
+        }
+        $model=Banner::find();
+        if($startTime){
+            $model->andWhere([">=","banner_add_time",strtotime($startTime)]);
+        }
+        if($endTime){
+            $model->andWhere(["<=","banner_add_time",strtotime($endTime)]);
+        }
+        if($content){
+            if($key=="banner_id"){
+                $model->where(["banner_id"=>$content]);
+            }
+            else{
+                $model->where(["like","banner_name",$content]);
+            }
+        }
+        $count=$model->count();
+        $pageSize = Yii::$app->params['pageSize']['banner'];
+        $pager = new Pagination(['totalCount' => $count, 'pageSize' => $pageSize]);
+        $memberList = $model->offset($pager->offset)->limit($pager->limit)->all();
+        return $this->render("index", ['pager' => $pager, 'memberList' => $memberList]);
+
     }
 
-    public function actionIndex()
-    {
-        Yii::$app->response->format=Response::FORMAT_JSON;
-        $page= Yii::$app->request->get("page");
-        $page_limit= Yii::$app->request->get("page_limit");
-        $memberCount=Banner::find()->count();
-        $memberList =  Banner::find()->offset($page*$page_limit)->limit($page_limit)->asArray()->all();
-        return [
-            'code'=>true,
-            'count'=>$memberCount,
-            "data"=>$memberList
-        ];
-    }
+    public function actionAdd(){
 
-    public function actionCreate()
-    {
-        Yii::$app->response->format=Response::FORMAT_JSON;
-        $returnData=array();
-        $model=new Banner();
-        $post=Yii::$app->request->post();
-        $result=$model->banner_add($post);
-        if($result){
-            $returnData=Helper::returnData(true,["id"=>$result],"删除成功!");
-        }
-        else{
+        $this->layout = 'mainNotNavAndFooter';
+        $bannerForm=new BannerForm();
+        $banner=new Banner();
+        if(Yii::$app->request->isPost){
 
-            $returnData=Helper::returnData(false,[],"删除失败!");
+            $bannerData=Yii::$app->request->post();
+            if($banner->bannerAdd($bannerData)){
+                Yii::$app->session->setFlash('info', '添加成功');
+            }
+            else{
+                Yii::$app->session->setFlash('info', '添加失败');
+            }
         }
-        return $returnData;
+        return $this->render("add",["model"=>$bannerForm]);
+
 
     }
 
