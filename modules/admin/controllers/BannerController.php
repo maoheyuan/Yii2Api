@@ -11,6 +11,7 @@ use app\helper\helper;
 use yii\data\Pagination;
 use app\modules\admin\models\Banner;
 use app\modules\admin\models\BannerForm;
+use app\modules\admin\models\Category;
 class BannerController extends Controller
 {
 
@@ -24,9 +25,6 @@ class BannerController extends Controller
         $key=Yii::$app->request->get("key","");
         $content=Yii::$app->request->get("content","");
         $pageLimit=Yii::$app->request->get("limit","");
-        if($pageLimit){
-            $pageLimit=20;
-        }
         $model=Banner::find();
         if($startTime){
             $model->andWhere([">=","banner_add_time",strtotime($startTime)]);
@@ -54,10 +52,9 @@ class BannerController extends Controller
 
         $this->layout = 'mainNotNavAndFooter';
         $bannerForm=new BannerForm();
-        $banner=new Banner();
         if(Yii::$app->request->isPost){
-
             $bannerData=Yii::$app->request->post();
+            $banner=new Banner();
             if($banner->bannerAdd($bannerData)){
                 Yii::$app->session->setFlash('info', '添加成功');
             }
@@ -65,13 +62,16 @@ class BannerController extends Controller
                 Yii::$app->session->setFlash('info', '添加失败');
             }
         }
-        return $this->render("add",["model"=>$bannerForm]);
-
-
+        $categoryList = ArrayHelper::map(
+            Category::find()->all(),
+            'category_id',
+            'category_name'
+        );
+        return $this->render("add",["bannerForm"=>$bannerForm,"categoryList"=>$categoryList]);
     }
 
 
-    public function  actionUpdate($member_id){
+    public function  actionEdit($member_id){
         Yii::$app->response->format=Response::FORMAT_JSON;
         $model=new Banner();
         $post=Yii::$app->request->post();

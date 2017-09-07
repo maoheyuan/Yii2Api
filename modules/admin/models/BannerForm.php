@@ -33,16 +33,16 @@ class BannerForm extends Model
 
     public  function  attributeLabels(){
         return [
-            "banner_id"=>"编号",
-            "banner_name"=>"名称",
-            "banner_image"=>"图片",
-            "banner_status"=>"状态",
-            "banner_category"=>"所属分类",
+            "banner_id"=>"轮播图编号",
+            "banner_name"=>"轮播图名称",
+            "banner_image"=>"轮播图图片",
+            "banner_status"=>"轮播图状态",
+            "banner_category"=>"轮播图分类",
             "banner_start_time"=>"有效开始时间",
             "banner_end_time"=>"有效结束时间",
             "banner_add_time"=>"新增时间",
             "banner_edit_time"=>"修改时间",
-            "banner_sort"=>"排序"
+            "banner_sort"=>"轮播图排序"
         ];
     }
 }

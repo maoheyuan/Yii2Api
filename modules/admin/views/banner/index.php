@@ -95,7 +95,7 @@ use yii\helpers\Url;
                 <td><?=$vo["banner_edit_time"]?></td>
                 <td><?=$vo["banner_sort"]?></td>
                 <td>
-                    <a  class="btn btn-warning  btn-sm update" title="管理员修改" data-url="<?= Url::toRoute(['banner/update'])?>?banner_id=<?= $vo['banner_id']?>"><i class="fa fa-edit" aria-hidden="true"></i> </a>
+                    <a  class="btn btn-warning  btn-sm update" title="管理员修改" data-url="<?= Url::toRoute(['banner/edit'])?>?banner_id=<?= $vo['banner_id']?>"><i class="fa fa-edit" aria-hidden="true"></i> </a>
                     <a  class="btn btn-danger   btn-sm delete"  title="管理员删除" data-id="<?= $vo['banner_id']?>" data-url="<?= Url::toRoute(['banner/delete'])?>?banner_id=<?= $vo['banner_id']?>"> <i class="fa fa-trash-o fa-lg"></i></a>
                 </td>
             </tr>

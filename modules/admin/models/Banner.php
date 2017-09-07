@@ -19,14 +19,12 @@ class Banner extends ActiveRecord
         if ($this->load($data)&&$this->validate()){
             $this->banner_add_time = time();
             if ($this->save(false)) {
-
                 return $this->banner_id;
             }
             return false;
         }
         return false;
     }
-
 
     public  function  bannerEdit($data){
         if ($this->load($data)&&$this->validate()) {
