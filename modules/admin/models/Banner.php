@@ -12,7 +12,7 @@ class Banner extends ActiveRecord
         return [
             ["banner_id","required","message"=>"编号不能为空","on"=>["bannerEdit"]],
             ["banner_name","required","message"=>"名称不能为空","on"=>["bannerAdd","bannerEdit"]],
-            ["banner_image","required","message"=>"图片不能为空","on"=>["bannerAdd","bannerEdit"]],
+            ["banner_image","required","message"=>"图片不能为空","on"=>["bannerAdd"]],
             ["banner_status","required","message"=>"状态不能为空","on"=>["bannerAdd","bannerEdit"]],
             ["banner_category","required","message"=>"所属分类不能为空","on"=>["bannerAdd","bannerEdit"]],
             ["banner_start_time","required","message"=>"有效开始时间不能为空","on"=>["bannerAdd","bannerEdit"]],
@@ -56,23 +56,21 @@ class Banner extends ActiveRecord
     }
 
     public  function  bannerEdit($data){
+        $this->scenario="bannerEdit";
         if ($this->load($data)&&$this->validate()) {
-            return (bool)$this->updateAll(
-                [
-                    'banner_id'         =>  $data["banner_id"],
-                    'banner_name'       =>  $data["banner_name"],
-                    'banner_image'      =>  $data["banner_image"],
-                    'banner_status'     =>  $data["banner_status"],
-                    'banner_category'   =>  $data["banner_category"],
-                    'banner_start_time' =>  $data["banner_start_time"],
-                    'banner_end_time'   =>  $data["banner_end_time"],
-                    'banner_add_time'   =>  $data["banner_add_time"],
-                    'banner_edit_time'  =>  $data["banner_edit_time"],
-                    'banner_sort'       =>  $data["banner_sort"]
-                ],
-                'banner_id = :banner_id',
-                [':banner_id' => $data["banner_id"]]
-            );
+            $bannerData=array();
+            $bannerData['banner_id']        = $data['Banner']["banner_id"];
+            $bannerData['banner_name']      = $data['Banner']["banner_name"];
+            if(isset($data['Banner']["banner_image"])){
+                $bannerData['banner_image']     = $data['Banner']["banner_image"];
+            }
+            $bannerData['banner_status']    = $data['Banner']["banner_status"];
+            $bannerData['banner_category']  = $data['Banner']["banner_category"];
+            $bannerData['banner_start_time']= $data['Banner']["banner_start_time"];
+            $bannerData['banner_end_time']  = $data['Banner']["banner_end_time"];
+            $bannerData['banner_edit_time'] = time();
+            $bannerData['banner_sort']      = $data['Banner']["banner_sort"];
+            return $this->updateAll($bannerData,'banner_id = :banner_id',[':banner_id' =>$data['Banner']["banner_id"]]);
         }
         return false;
     }

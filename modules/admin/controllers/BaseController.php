@@ -13,7 +13,7 @@ class BaseController extends Controller
         $this->enableCsrfValidation = false;
         $this->pageTheme=Yii::$app->params['pageTheme'];
     }
-    public function success($message="",$url="",$waitSecond=5)
+    public function success($message="",$url="",$waitSecond=3)
     {
         if($url==""){
             $url = "javascript:history.back(-1);";
@@ -30,7 +30,7 @@ class BaseController extends Controller
         );
     }
 
-    public function  error($message="",$url="",$waitSecond=5){
+    public function  error($message="",$url="",$waitSecond=3){
         if($url==""){
             $url = "javascript:history.back(-1);";
         }

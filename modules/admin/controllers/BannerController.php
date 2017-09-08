@@ -53,9 +53,9 @@ class BannerController extends BaseController
         $banner=new Banner();
         if(Yii::$app->request->isPost){
             $bannerData=Yii::$app->request->post();
-            $saveImageName = \Yii::$app->mhyUploadsFile->uploadsImage('banner_image');
-            if ($saveImageName) {
-                $bannerData["Banner"]["banner_image"]=$saveImageName;
+            $imageInfo = \Yii::$app->mhyUploadsFile->uploadsImage('banner_image');
+            if ($imageInfo["status"]) {
+                $bannerData["Banner"]["banner_image"]=$imageInfo["data"];
                 if($bannerId=$banner->bannerAdd($bannerData)) {
                     return $this->success('添加成功',"banner/add");
                 }
@@ -80,34 +80,40 @@ class BannerController extends BaseController
             ]);
     }
 
-    public function  actionEdit($member_id){
-        Yii::$app->response->format=Response::FORMAT_JSON;
-        $model=new Banner();
-        $post=Yii::$app->request->post();
-        $post["member_id"]=$member_id;
-        $result=$model->banner_edit($post);
-        if($result){
-            $returnData=Helper::returnData(true,["id"=>$result],"修改成功!");
+    public function  actionEdit($banner_id){
+        $this->layout = 'mainNotNavAndFooter';
+        $bannerModel=new Banner();
+        $banner=$bannerModel->getInfoById($banner_id);
+        if(Yii::$app->request->isPost){
+            $bannerData=Yii::$app->request->post();
+            $imageInfo= \Yii::$app->mhyUploadsFile->uploadsImage('banner_image');
+            if($imageInfo["status"] ==0&&$imageInfo["data"]!=400){
+                return $this->error('图片保存失败');
+            }
+            if($imageInfo["status"] ==1){
+                $bannerData["Banner"]["banner_image"]=$imageInfo["data"];
+            }
+            $bannerData["Banner"]["banner_id"]=$banner_id;
+            if($banner->bannerEdit($bannerData)) {
+                return $this->success('修改成功',["banner/edit", 'banner_id' => $banner_id]);
+            }
+            else{
+                $error=Helper::getFirstError($banner);
+                return $this->error($error);
+            }
         }
-        else{
-            $returnData=Helper::returnData(false,[],"修改失败!");
-        }
-        return $returnData;
+        $categoryList = ArrayHelper::map(
+            Category::find()->all(),
+            'category_id',
+            'category_name'
+        );
+        $banner->scenario="bannerEdit";
+        return $this->render("edit",[
+            "banner"=>$banner,
+            "categoryList"=>$categoryList
+        ]);
     }
 
-    public  function  actionView($member_id){
-        Yii::$app->response->format=Response::FORMAT_JSON;
-        $model=new Banner();
-        $result=$model->get_view_by_id($member_id);
-        $result=ArrayHelper::toArray($result);
-        if($result){
-            $returnData=Helper::returnData(true,$result,"查找成功!");
-        }
-        else{
-            $returnData=Helper::returnData(false,[],"查找失败!");
-        }
-        return $returnData;
-    }
 
 
     public function actionDelete($member_id){
