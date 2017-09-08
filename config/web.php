@@ -80,7 +80,11 @@ $config = [
                 ],
             ],
         ],*/
-
+        // 使用配置数组，注册自定义组件 mhyUploadsFile
+        'mhyUploadsFile' => [
+            'class'    => 'app\components\mhyUploadsFile',    // 组件名称 arr 所指向的类文件
+            'savePath'    => './uploads/images'  // 自定义组件的属性，在控制器的方法中这样访问属性 port 的值，\Yii::$app->mhyUploadsFile->savePath
+        ],
     ],
 
     'modules' => [

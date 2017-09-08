@@ -126,6 +126,7 @@ class UploadedFile extends Object
     {
         $files = self::loadFiles();
         if (isset($files[$name])) {
+            var_dump("ddd");
             return [new static($files[$name])];
         }
         $results = [];
@@ -160,6 +161,8 @@ class UploadedFile extends Object
     {
         if ($this->error == UPLOAD_ERR_OK) {
             if ($deleteTempFile) {
+
+
                 return move_uploaded_file($this->tempName, $file);
             } elseif (is_uploaded_file($this->tempName)) {
                 return copy($this->tempName, $file);

@@ -12,11 +12,11 @@ use yii\data\Pagination;
 use app\modules\admin\models\Banner;
 use app\modules\admin\models\BannerForm;
 use app\modules\admin\models\Category;
-class BannerController extends Controller
+use yii\web\UploadedFile;
+
+class BannerController extends BaseController
 {
-
     public function actionIndex(){
-
 
         $this->layout="main";
         $getData=Yii::$app->request->get();
@@ -49,17 +49,23 @@ class BannerController extends Controller
     }
 
     public function actionAdd(){
-
         $this->layout = 'mainNotNavAndFooter';
-        $bannerForm=new BannerForm();
+        $banner=new Banner();
         if(Yii::$app->request->isPost){
             $bannerData=Yii::$app->request->post();
-            $banner=new Banner();
-            if($banner->bannerAdd($bannerData)){
-                Yii::$app->session->setFlash('info', '添加成功');
+            $saveImageName = \Yii::$app->mhyUploadsFile->uploadsImage('banner_image');
+            if ($saveImageName) {
+                $bannerData["Banner"]["banner_image"]=$saveImageName;
+                if($bannerId=$banner->bannerAdd($bannerData)) {
+                    return $this->success('添加成功',"banner/add");
+                }
+                else{
+                    $error=Helper::getFirstError($banner);
+                    return $this->error($error);
+                }
             }
             else{
-                Yii::$app->session->setFlash('info', '添加失败');
+                return $this->error('图片保存失败');
             }
         }
         $categoryList = ArrayHelper::map(
@@ -67,9 +73,12 @@ class BannerController extends Controller
             'category_id',
             'category_name'
         );
-        return $this->render("add",["bannerForm"=>$bannerForm,"categoryList"=>$categoryList]);
+        $banner->scenario="bannerAdd";
+        return $this->render("add",[
+                "banner"=>$banner,
+                "categoryList"=>$categoryList
+            ]);
     }
-
 
     public function  actionEdit($member_id){
         Yii::$app->response->format=Response::FORMAT_JSON;
