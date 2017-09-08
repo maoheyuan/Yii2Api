@@ -49,6 +49,8 @@ class AreaController extends BaseController
 
     }
 
+
+
     public function actionAdd()
     {
         $this->layout = 'mainNotNavAndFooter';

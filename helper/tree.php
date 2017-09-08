@@ -43,7 +43,7 @@ class tree  {
 				}
 				$spacer = $adds ? $adds.$j : '';
 
-				@extract($a);
+                @extract($a);
 				if(empty($a['selected'])){$selected = $id==$sid ? 'selected' : '';}
                 if(!isset($parentid)){
                     $parentid=0;
@@ -52,6 +52,7 @@ class tree  {
                     $newstr="";
                 }
 				$parentid == 0 && $strgroup ? eval("\$newstr = \"$strgroup\";") : eval("\$newstr = \"$str\";");
+
 				$this->ret .= $newstr;
 				$nbsp = $this->nbsp;
 				$this->get_tree($id, $str, $sid, $adds.$k.$nbsp,$strgroup);
@@ -96,5 +97,44 @@ class tree  {
         if(!$recursion)  $this->ret .='</ul>';
         return $this->ret;
     }
+
+
+
+    public function getTree($cates, $pid = 0)
+    {
+        $tree = [];
+        foreach($cates as $cate) {
+            if ($cate['parentid'] == $pid) {
+                $tree[] = $cate;
+                $tree = array_merge($tree, $this->getTree($cates, $cate['id']));
+            }
+        }
+        return $tree;
+    }
+
+
+    public function setPrefix($data, $p = "|-----")
+    {
+        $tree = [];
+        $num = 1;
+        $prefix = [0 => 1];
+        while($val = current($data)) {
+            $key = key($data);
+            if ($key > 0) {
+                if ($data[$key - 1]['parentid'] != $val['parentid']) {
+                    $num ++;
+                }
+            }
+            if (array_key_exists($val['parentid'], $prefix)) {
+                $num = $prefix[$val['parentid']];
+            }
+            $val['title'] = str_repeat($p, $num).$val['title'];
+            $prefix[$val['parentid']] = $num;
+            $tree[] = $val;
+            next($data);
+        }
+        return $tree;
+    }
+
 }
 ?>

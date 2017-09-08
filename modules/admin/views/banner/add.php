@@ -8,13 +8,7 @@ use yii\helpers\Html;
         height: auto !important;
     }
 </style>
-
-
-
 <?php
-
-
-
     $form=ActiveForm::begin([
          "fieldConfig"=>[
              "template"=> '
@@ -33,24 +27,26 @@ use yii\helpers\Html;
     ]);
 ?>
 
-<!--<div class="form-group">
-    <div class=" col-sm-1">
-    </div>
-    <div class=" col-sm-9">
-        <?php
-/*        if (Yii::$app->session->hasFlash('info')) {
-            echo '<p class="bg-danger well-sm" style="padding: 8px">'.Yii::$app->session->getFlash('info').'</p>';
-        }
-        */?>
-    </div>
-</div>
--->
-
 <?=$form->field($banner,'banner_name')->textInput(["class"=>"form-control"]);?>
 <?=$form->field($banner,"banner_image")->fileInput(["class"=>"form-control","name"=>"banner_image"]);?>
 <?=$form->field($banner,"banner_status")->radioList([1 => '启用', 2 => '禁用'], ["class"=>"form-control"]);?>
 <?=$form->field($banner,"banner_category")->dropDownList($categoryList, ['prompt' => '请选择分类']);?>
-<?=$form->field($banner,"banner_sort")->textInput(["class"=>"form-control"]); ?>
+
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">
+        <label class="control-label" for="banner-banner_category">轮播图分类</label>
+    </label>
+    <div class="col-sm-8">
+        <select id="banner-banner_category" class="form-control" name="Banner[banner_category]">
+            <option value="">请选择分类</option>
+           <!-- --><?php /*echo $categoryTree;*/?>
+        </select>
+    </div>
+</div>
+
+
+<?=$form->field($banner,"banner_sort")->textInput(["class"=>"form-control","value"=>100]); ?>
 <?=$form->field($banner,"banner_start_time")->textInput(["class"=>"Wdate form-control","onclick"=>"WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})"]); ?>
 <?=$form->field($banner,"banner_end_time")->textInput(["class"=>"Wdate form-control","onclick"=>"WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})"]); ?>
 

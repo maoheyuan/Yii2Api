@@ -1,18 +1,14 @@
 <?php
 
 namespace app\modules\admin\controllers;
-
 use Yii;
-use yii\web\Controller;
 use yii\web\Response;
-
 use yii\helpers\ArrayHelper;
 use app\helper\helper;
+use app\helper\tree;
 use yii\data\Pagination;
 use app\modules\admin\models\Banner;
-use app\modules\admin\models\BannerForm;
 use app\modules\admin\models\Category;
-use yii\web\UploadedFile;
 
 class BannerController extends BaseController
 {
@@ -48,6 +44,49 @@ class BannerController extends BaseController
 
     }
 
+    protected function  categoryTree($banner_category=0)
+    {
+        try{
+            $categoryList = Category::find()->asArray()->all();
+
+            foreach($categoryList as $r) {
+                $r["id"]=$r["category_id"];
+                $r["parentId"]=$r["category_parent_id"];
+                $r['selected'] = $r['id'] == $banner_category ? 'selected' : '';
+                $array[] = $r;
+            }
+            $str  = "<option value='\$id' \$selected>\$spacer \$category_name</option>";
+            $tree = new tree ($array);
+            $tree->icon = array('&nbsp;&nbsp;&nbsp;│ ','&nbsp;&nbsp;&nbsp;├─','&nbsp;&nbsp;&nbsp;└─ ');
+            $list = $tree->get_tree(0, $str,$banner_category);
+            return $list;
+
+        }catch(\Exception $e){
+            $this->error($e->getMessage());
+        }
+    }
+
+    protected function  getCategoryTree()
+    {
+        try{
+            $categoryList = Category::find()->asArray()->all();
+
+            foreach($categoryList as $r) {
+                $r["id"]=$r["category_id"];
+                $r["parentid"]=$r["category_parent_id"];
+                $r["title"]=$r["category_name"];
+               $array[] = $r;
+            }
+            $tree = new tree (array());
+            $categoryTree=$tree->getTree($array);
+            $categoryTree = $tree->setPrefix($categoryTree);
+
+            return $categoryTree;
+        }catch(\Exception $e){
+            $this->error($e->getMessage());
+        }
+    }
+
     public function actionAdd(){
         $this->layout = 'mainNotNavAndFooter';
         $banner=new Banner();
@@ -68,15 +107,19 @@ class BannerController extends BaseController
                 return $this->error('图片保存失败');
             }
         }
+        $categoryTree=$this->getCategoryTree();
         $categoryList = ArrayHelper::map(
-            Category::find()->all(),
+            $categoryTree,
             'category_id',
-            'category_name'
+            'title'
         );
+
+        //$categoryTree=$this->categoryTree($banner->banner_category);
         $banner->scenario="bannerAdd";
         return $this->render("add",[
                 "banner"=>$banner,
-                "categoryList"=>$categoryList
+                "categoryList"=>$categoryList,
+                "categoryTree"=>$categoryTree
             ]);
     }
 
