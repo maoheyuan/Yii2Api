@@ -58,7 +58,7 @@ AppAsset::register($this);
         <a class="list-group-item" href="<?= Url::toRoute("area/index")?>">
             <i class="fa fa-area-chart pd5" aria-hidden="true"></i>地区管理
         </a>
-        <a class="list-group-item" href="<?= Url::toRoute("memberAddress/index")?>">
+        <a class="list-group-item" href="<?= Url::toRoute("member-address/index")?>">
             <i class="fa fa-university pd5" aria-hidden="true"></i>地址管理
         </a>
         <a class="list-group-item" href="<?= Url::toRoute("banner/index")?>">

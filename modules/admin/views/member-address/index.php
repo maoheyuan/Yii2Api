@@ -20,7 +20,7 @@ use yii\helpers\Url;
 
                 <div class="btn-group form-group" >
 
-                    <button type="button" class="btn btn-primary create" title="管理员新增" data-url="{:U('admin/add')}"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-primary create" title="轮播图新增" data-url="<?= Url::toRoute(['banner/add'])?>"><i class="fa fa-plus" aria-hidden="true"></i></button>
 
                 </div>
                 <div class="form-group">
@@ -43,8 +43,8 @@ use yii\helpers\Url;
                 <div class="form-group">
                     <select name="key" class="form-control">
                         <option value="">请选择</option>
-                        <option value="admin_id"     <?= isset($request['key'])&&$request['key'] == 'admin_id' ?"selected":"" ?> >管理员编号</option>
-                        <option value="admin_name"   <?=isset($request['key'])&&$request['key'] == 'admin_name' ?"selected":"" ?> >管理员名称</option>
+                        <option value="banner_id"     <?= isset($request['key'])&&$request['key'] == 'banner_id' ?"selected":"" ?> >轮播图编号</option>
+                        <option value="banner_name"   <?=isset($request['key'])&&$request['key'] == 'banner_name' ?"selected":"" ?> >轮播图名称</option>
                     </select>
                 </div>
 
@@ -67,48 +67,38 @@ use yii\helpers\Url;
         <thead>
         <tr class="info">
             <th><input id="select-all" type="checkbox"></th>
-            <th >订单编号</th>
-            <th>会员编号</th>
-            <th >订单价格</th>
-            <th >支付类型</th>
-            <th >支付状态</th>
-            <th >支付时间</th>
-            <th >订单状态</th>
-            <th >优惠价格</th>
-            <th >优惠券金额</th>
-            <th >使用账户金额</th>
-            <th >支付类型金额</th>
-            <th >运费</th>
-            <th >退货状态</th>
-            <th >订单收货人地址</th>
-            <th >配送时间</th>
+            <th >自增编号</th>
+            <th >会员Id</th>
+            <th >省</th>
+            <th >市</th>
+            <th >区/县</th>
+            <th>小区</th>
+            <th>收货人</th>
+            <th>收货人手机</th>
+            <th>默认地址</th>
             <th>新增时间</th>
+            <th>修改时间</th>
             <th>操作</th>
         </tr>
         </thead>
         <tbody>
-        <?php foreach($orderList as $key=>$vo){ ?>
-            <tr id="row<?=$vo['order_id']?>">
+        <?php foreach($memberList as $key=>$vo){ ?>
+            <tr id="row<?=$vo['maddress_id']?>">
                 <td><input  type="checkbox"></td>
-                <td><?=$vo["order_id"]?></td>
-                <td><?=$vo["order_member_id"]?></td>
-                <td><?=$vo["order_money"]?></td>
-                <td><?=$vo["order_pay_type"]?></td>
-                <td><?=$vo["order_pay_status"]?></td>
-                <td><?=$vo["order_pay_time"]?></td>
-                <td><?=$vo["order_status"]?></td>
-                <td><?=$vo["order_preferential_privilege"]?></td>
-                <td><?=$vo["order_coupon_money"]?></td>
-                <td><?=$vo["order_account_money"]?></td>
-                <td><?=$vo["order_pay_type_money"]?></td>
-                <td><?=$vo["order_freight"]?></td>
-                <td><?=$vo["order_consignee_address"]?></td>
-                <td><?=$vo["order_delivery_time"]?></td>
-                <td><?=$vo["order_pay_type_money"]?></td>
-                <td><?=$vo["order_add_time"]?></td>
+                <td><?=$vo["maddress_id"]?></td>
+                <td><?=$vo["maddress_member_id"]?></td>
+                <td><?=$vo["maddress_province_id"]?></td>
+                <td><?=$vo["maddress_city_id"]?></td>
+                <td><?=$vo["maddress_area_id"]?></td>
+                <td><?=$vo["maddress_cell_id"]?></td>
+                <td><?=$vo["maddress_consignee_name"]?></td>
+                <td><?=$vo["maddress_consignee_mobile"]?></td>
+                <td><?=$vo["maddress_default"]?></td>
+                <td><?=$vo["maddress_add_time"]?></td>
+                <td><?=$vo["maddress_edit_time"]?></td>
                 <td>
-                    <a  class="btn btn-warning  btn-sm update" title="管理员修改" data-url="<?= Url::toRoute(['order/update'])?>?order_id=<?= $vo['order_id']?>"><i class="fa fa-edit" aria-hidden="true"></i> </a>
-                    <a  class="btn btn-danger   btn-sm delete"  title="管理员删除" data-id="<?= $vo['order_id']?>" data-url="<?= Url::toRoute(['order/delete'])?>?order_id=<?= $vo['order_id']?>"> <i class="fa fa-trash-o fa-lg"></i></a>
+                    <a  class="btn btn-warning  btn-sm update" title="管理员修改" data-url="<?= Url::toRoute(['member-address/edit'])?>?maddress_id=<?= $vo['maddress_id']?>"><i class="fa fa-edit" aria-hidden="true"></i> </a>
+                    <a  class="btn btn-danger   btn-sm delete"  title="管理员删除" data-id="<?= $vo['maddress_id']?>" data-url="<?= Url::toRoute(['member-address/delete'])?>?maddress_id=<?= $vo['maddress_id']?>"> <i class="fa fa-trash-o fa-lg"></i></a>
                 </td>
             </tr>
         <?php } ?>

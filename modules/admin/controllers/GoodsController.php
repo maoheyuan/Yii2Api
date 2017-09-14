@@ -107,4 +107,18 @@ class GoodsController extends Controller
         return $returnData;
     }
 
+    public  function  actionSetStatus(){
+
+        $model=new Goods();
+
+        $status=Yii::$app->request->get("status",0);
+
+        if($model->setStatus($status)){
+
+
+            
+        }
+
+    }
+
 }
