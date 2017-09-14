@@ -124,6 +124,7 @@ class BannerController extends BaseController
     }
 
     public function  actionEdit($banner_id){
+
         $this->layout = 'mainNotNavAndFooter';
         $bannerModel=new Banner();
         $banner=$bannerModel->getInfoById($banner_id);
@@ -145,10 +146,11 @@ class BannerController extends BaseController
                 return $this->error($error);
             }
         }
+        $categoryTree=$this->getCategoryTree();
         $categoryList = ArrayHelper::map(
-            Category::find()->all(),
+            $categoryTree,
             'category_id',
-            'category_name'
+            'title'
         );
         $banner->scenario="bannerEdit";
         return $this->render("edit",[
@@ -159,10 +161,10 @@ class BannerController extends BaseController
 
 
 
-    public function actionDelete($member_id){
+    public function actionDelete($banner_id){
         Yii::$app->response->format=Response::FORMAT_JSON;
         $model=new Banner();
-        $result=$model->banner_delete($member_id);
+        $result=$model->bannerDelete($banner_id);
         if($result){
             $returnData=Helper::returnData(true,["id"=>$result],"删除成功!");
         }
@@ -171,11 +173,5 @@ class BannerController extends BaseController
         }
         return $returnData;
     }
-
-    protected  function  getFirstError($model){
-
-      return  array_values($model->getFirstErrors())[0];
-    }
-
 
 }

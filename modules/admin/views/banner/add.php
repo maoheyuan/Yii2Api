@@ -32,20 +32,6 @@ use yii\helpers\Html;
 <?=$form->field($banner,"banner_status")->radioList([1 => '启用', 2 => '禁用'], ["class"=>"form-control"]);?>
 <?=$form->field($banner,"banner_category")->dropDownList($categoryList, ['prompt' => '请选择分类']);?>
 
-
-<div class="form-group">
-    <label class="col-sm-2 control-label">
-        <label class="control-label" for="banner-banner_category">轮播图分类</label>
-    </label>
-    <div class="col-sm-8">
-        <select id="banner-banner_category" class="form-control" name="Banner[banner_category]">
-            <option value="">请选择分类</option>
-           <!-- --><?php /*echo $categoryTree;*/?>
-        </select>
-    </div>
-</div>
-
-
 <?=$form->field($banner,"banner_sort")->textInput(["class"=>"form-control","value"=>100]); ?>
 <?=$form->field($banner,"banner_start_time")->textInput(["class"=>"Wdate form-control","onclick"=>"WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})"]); ?>
 <?=$form->field($banner,"banner_end_time")->textInput(["class"=>"Wdate form-control","onclick"=>"WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})"]); ?>

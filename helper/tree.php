@@ -16,7 +16,6 @@ class tree  {
 	     $this->ret = '';
 	     return is_array($arr);
     }
-
 	public function getchild($bid){
 		$a = $newarr = array();
 		if(is_array($this->arr)){
@@ -24,7 +23,6 @@ class tree  {
 				if($a['parentId'] == $bid) $newarr[$id] = $a;
 			}
 		}
-
 		return $newarr ? $newarr : false;
 	}
 
@@ -62,44 +60,6 @@ class tree  {
 		return $this->ret;
 	}
 
-	function get_nav($bid,$maxlevel,$effected_id='navlist',$style='filetree ' ,$homefont='',$recursion=FALSE ,$child='',$showenname='',$site_url='') {
-		if($showenname) $indexen =  '<em>home</em>';
-		if($homefont) $homefont='<li id="nav_0"><span class="fl_ico"></span><a href="'.$site_url.'"><span class="fl">'.$homefont.'</span>'.$indexen.'</a></li>';
-		$number=1;
-		if(!$child) $child = $this->getchild($bid);
-
-		$total = count($child);
-		$effected = $effected_id ?  ' id="'.$effected_id.'_box"' : '';
-		$class=  $style? ' class="'.$style.'"' : '';
-        if(!$recursion)	$this->ret .='<ul'.$effected.$class.'>'.$homefont;
-        foreach($child as $id=>$a) {
-        	@extract($a);
-			 if(!$recursion) $this->level= $level+$maxlevel;
-			$ischild =$this->getchild($id);
-			$foldertype =  $ischild ? 'folder' : 'file';
-        	$floder_status = ' id="'.$effected_id.'_'.$id.'"';
-			$first = $number==1 ?   'first ' : '';
-			$floder_status .=  $number==$total ?  ' class="foot '.$foldertype.'"' :  ' class="'.$first.$foldertype.'"';
-			$this->ret .= $recursion ? '<ul><li'.$floder_status.'>' : '<li'.$floder_status.'>';
-            $recursion = FALSE;
-			if($showenname){
-				$enzm = $enname ? '<em>'.$enname.'</em>' :  '<em>'.$catdir.'</em>';
-			}
-            if($ischild && $level < $this->level){
-				$this->ret .= '<span class="fd_ico"></span><a href="'.$url.'"><span class="fd">'.$catname.'</span>'.$enzm.'</a>';
-                $this->get_nav($id,$maxlevel,$effected_id,$style,'',TRUE,$ischild,$showenname);
-            } else {
-			   $this->ret .= '<span class="fl_ico"></span><a href="'.$url.'"><span class="fl">'.$catname.'</span>'.$enzm.'</a>';
-            }
-           $this->ret .=$recursion ? '</li></ul>': '</li>';
-		   $number++;
-        }
-        if(!$recursion)  $this->ret .='</ul>';
-        return $this->ret;
-    }
-
-
-
     public function getTree($cates, $pid = 0)
     {
         $tree = [];
@@ -113,7 +73,7 @@ class tree  {
     }
 
 
-    public function setPrefix($data, $p = "|-----")
+    public function setPrefix($data, $p = "├─")
     {
         $tree = [];
         $num = 1;
@@ -128,9 +88,18 @@ class tree  {
             if (array_key_exists($val['parentid'], $prefix)) {
                 $num = $prefix[$val['parentid']];
             }
-            $val['title'] = str_repeat($p, $num).$val['title'];
+
+            if((count($data)-1)==$key){
+                $val['title'] = str_repeat($p, ($num-1))."└─".$val['title'];
+            }else{
+                $val['title'] = str_repeat($p, $num).$val['title'];
+            }
+
             $prefix[$val['parentid']] = $num;
+
+
             $tree[] = $val;
+
             next($data);
         }
         return $tree;

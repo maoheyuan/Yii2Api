@@ -10,7 +10,7 @@ class Banner extends ActiveRecord
     public function rules(){
 
         return [
-            ["banner_id","required","message"=>"编号不能为空","on"=>["bannerEdit"]],
+            ["banner_id","required","message"=>"编号不能为空","on"=>["bannerEdit","bannerDelete"]],
             ["banner_name","required","message"=>"名称不能为空","on"=>["bannerAdd","bannerEdit"]],
             ["banner_image","required","message"=>"图片不能为空","on"=>["bannerAdd"]],
             ["banner_status","required","message"=>"状态不能为空","on"=>["bannerAdd","bannerEdit"]],
@@ -74,12 +74,12 @@ class Banner extends ActiveRecord
         }
         return false;
     }
-
-
+    
     public  function  bannerDelete($banner_id){
         $data["Banner"]["banner_id"]=$banner_id;
         if($this->load($data)&&$this->validate()) {
-            if ($this->delete()) {
+            $bannerInfo=$this->findOne($banner_id);
+            if ($bannerInfo->delete()) {
                 return true;
             }
         }
