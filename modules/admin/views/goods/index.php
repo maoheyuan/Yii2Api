@@ -1,7 +1,5 @@
 <?php
-
 use yii\helpers\Url;
-
 ?>
 <ol class="breadcrumb">
     <li><a href="<?= Url::toRoute(['index/index'])?>">主页</a></li>
@@ -12,7 +10,6 @@ use yii\helpers\Url;
         <a href="#">[退出]</a>
     </div>
 </ol>
-
 <nav class="navbar navbar-default">
     <div class="container-fluid pdl0">
         <div class="collapse navbar-collapse pdl0" id="bs-example-navbar-collapse-1">
@@ -47,7 +44,6 @@ use yii\helpers\Url;
                         <option value="admin_name"   <?=isset($request['key'])&&$request['key'] == 'admin_name' ?"selected":"" ?> >管理员名称</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <input type="text" class="form-control" name="content" placeholder="内容" value="<?=isset($request['content'])&&$request['content']?>">
                 </div>
@@ -69,36 +65,52 @@ use yii\helpers\Url;
             <th><input id="select-all" type="checkbox"></th>
             <th >编号</th>
             <th>管理员名称</th>
-            <th >登录时间</th>
-            <th >登录次数</th>
-            <th >是否超级管理员</th>
-            <th>新增时间</th>
+            <th >规格名称</th>
+            <th >商品规格</th>
+            <th >认封面图</th>
+            <th>商品货号</th>
+            <th>商品状态</th>
+            <th>发布开始时间</th>
+            <th>发布结束时间</th>
+            <th>修改时间</th>
+
             <th>修改时间</th>
             <th>操作</th>
         </tr>
         </thead>
         <tbody>
         <?php foreach($goodsList as $key=>$vo){ ?>
-            <tr id="row<?=$vo['admin_id']?>">
+            <tr id="row<?=$vo['goods_id']?>">
                 <td><input  type="checkbox"></td>
-                <td><?=$vo["admin_id"]?></td>
-                <td><?=$vo["admin_name"]?></td>
-                <td><?=$vo["admin_login_time"]?></td>
-                <td><?=$vo["admin_login_num"]?></td>
-                <td><?=$vo["admin_is_super"]?></td>
-                <td><?=$vo["admin_add_time"]?></td>
-                <td><?=$vo["admin_eidt_time"]?></td>
+                <td><?=$vo["goods_id"]?></td>
+                <td><?=$vo["goods_name"]?></td>
+                <td><?=$vo["spec_name"]?></td>
+                <td><?=$vo["goods_spec"]?></td>
+                <td><?=$vo["goods_image"]?></td>
+                <td><?=$vo["goods_serial"]?></td>
+
+                <td><?=$vo["goods_state"]?></td>
+                <td><?=$vo["goods_starttime"]?></td>
+                <td><?=$vo["goods_endtime"]?></td>
+
+                <td><?=$vo["goods_add_time"]?></td>
+                <td><?=$vo["goods_edit_time"]?></td>
+
                 <td>
-                    <a  class="btn btn-warning  btn-sm update" title="管理员修改" data-url="<?= Url::toRoute(['admin/update'])?>?admin_id=<?= $vo['admin_id']?>"><i class="fa fa-edit" aria-hidden="true"></i> </a>
-                    <a  class="btn btn-danger   btn-sm delete"  title="管理员删除" data-id="<?= $vo['admin_id']?>" data-url="<?= Url::toRoute(['admin/delete'])?>?admin_id=<?= $vo['admin_id']?>"> <i class="fa fa-trash-o fa-lg"></i></a>
+                    <a  class="btn btn-warning  btn-sm update" title="管理员修改" data-url="<?= Url::toRoute(['goods/update'])?>?goods_id=<?= $vo['goods_id']?>"><i class="fa fa-edit" aria-hidden="true"></i> </a>
+                    <a  class="btn btn-danger   btn-sm delete"  title="管理员删除" data-id="<?= $vo['goods_id']?>" data-url="<?= Url::toRoute(['goods/delete'])?>?goods_id=<?= $vo['goods_id']?>"> <i class="fa fa-trash-o fa-lg"></i></a>
                 </td>
             </tr>
         <?php } ?>
         </tbody>
     </table>
-    <nav class="Page textRight" aria-label="Page navigation">
-        <?=$page?>
-    </nav>
+    <div class="pagination pull-right">
+        <?php echo yii\widgets\LinkPager::widget([
+            'pagination' => $pager,
+            'prevPageLabel' => '&#8249;',
+            'nextPageLabel' => '&#8250;',
+        ]); ?>
+    </div>
 </div>
 <script type="application/javascript">
     (function($){

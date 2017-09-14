@@ -5,29 +5,46 @@ namespace app\modules\admin\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
-use app\models\Category;
+use app\modules\admin\models\Category;
 use yii\helpers\ArrayHelper;
 use app\helper\helper;
+use yii\helpers\Url;
+use app\helper\tree;
 
 class CategoryController extends Controller
 {
 
     public function init(){
         $this->enableCsrfValidation = false;
-        Yii::$app->response->format=Response::FORMAT_JSON;
+      /*  Yii::$app->response->format=Response::FORMAT_JSON;*/
     }
 
     public function actionIndex()
     {
-        $page= Yii::$app->request->get("page");
-        $page_limit= Yii::$app->request->get("page_limit");
-        $memberCount=Category::find()->count();
-        $memberList =  Category::find()->offset($page*$page_limit)->limit($page_limit)->asArray()->all();
-        return [
-            'code'=>true,
-            'count'=>$memberCount,
-            "data"=>$memberList
-        ];
+        $this->layout = 'main';
+        $areaList =Category::find()->asArray()->all();
+        //echo $model->createCommand()->getRawSql();
+        foreach($areaList as $r) {
+            $r["id"]=$r["category_id"];
+            $r["parentId"]=$r["category_parent_id"];
+
+            $r['str_manage'] = '<a  class="btn btn-warning btn-sm update" title="会员修改" data-url="'.Url::toRoute(['category/update']).'?category_id='.$r['category_id'].'"><i class="fa fa-edit" aria-hidden="true"></i> </a>
+                                         <a  class="btn btn-danger btn-sm delete"  title="会员删除" data-id="'.$r['category_id'].'" data-url="'.Url::toRoute(['category/delete']).'?category_id='.$r['category_id'].'"> <i class="fa fa-trash-o fa-lg"></i></a>';
+            $array[] = $r;
+        }
+        $str  = "<tr id='row\$id'>
+						<td align='center'><input name='listorders[\$id]' type='text' size='3' value='\$category_sort'></td>
+						<td align='center'>\$id</td>
+						<td  >\$spacer\$category_name</td>
+
+						<td align='center'>\$category_add_time</td>
+						<td align='center'>\$str_manage</td>
+					</tr>";
+        $tree =  new tree ($array);
+        $tree->icon = array('&nbsp;&nbsp;&nbsp;│ ','&nbsp;&nbsp;&nbsp;├─','&nbsp;&nbsp;&nbsp;└─ ');
+        $tree->nbsp = '&nbsp;&nbsp;&nbsp;';
+        $list = $tree->get_tree(0, $str);
+        return $this->render("index", ["list"=>$list]);
     }
 
     public function actionCreate()

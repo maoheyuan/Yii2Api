@@ -67,51 +67,65 @@ use yii\helpers\Url;
         <thead>
         <tr class="info">
             <th><input id="select-all" type="checkbox"></th>
-            <th >编号</th>
-            <th>管理员名称</th>
-            <th >登录时间</th>
-            <th >登录次数</th>
-            <th >是否超级管理员</th>
+            <th >订单编号</th>
+            <th>会员编号</th>
+            <th >订单价格</th>
+            <th >支付类型</th>
+            <th >支付状态</th>
+            <th >支付时间</th>
+            <th >订单状态</th>
+            <th >优惠价格</th>
+            <th >优惠券金额</th>
+            <th >使用账户金额</th>
+            <th >支付类型金额</th>
+            <th >运费</th>
+            <th >退货状态</th>
+            <th >订单收货人地址</th>
+            <th >配送时间</th>
             <th>新增时间</th>
-            <th>修改时间</th>
             <th>操作</th>
         </tr>
         </thead>
         <tbody>
-        <?php foreach($goodsList as $key=>$vo){ ?>
-            <tr id="row<?=$vo['admin_id']?>">
+        <?php foreach($orderList as $key=>$vo){ ?>
+            <tr id="row<?=$vo['order_id']?>">
                 <td><input  type="checkbox"></td>
-                <td><?=$vo["admin_id"]?></td>
-                <td><?=$vo["admin_name"]?></td>
-                <td><?=$vo["admin_login_time"]?></td>
-                <td><?=$vo["admin_login_num"]?></td>
-                <td><?=$vo["admin_is_super"]?></td>
-                <td><?=$vo["admin_add_time"]?></td>
-                <td><?=$vo["admin_eidt_time"]?></td>
+                <td><?=$vo["order_id"]?></td>
+                <td><?=$vo["order_member_id"]?></td>
+                <td><?=$vo["order_money"]?></td>
+                <td><?=$vo["order_pay_type"]?></td>
+                <td><?=$vo["order_pay_status"]?></td>
+                <td><?=$vo["order_pay_time"]?></td>
+                <td><?=$vo["order_status"]?></td>
+
+
+                <td><?=$vo["order_preferential_privilege"]?></td>
+                <td><?=$vo["order_coupon_money"]?></td>
+                <td><?=$vo["order_account_money"]?></td>
+                <td><?=$vo["order_pay_type_money"]?></td>
+
+
+                <td><?=$vo["order_freight"]?></td>
+                <td><?=$vo["order_consignee_address"]?></td>
+                <td><?=$vo["order_delivery_time"]?></td>
+                <td><?=$vo["order_pay_type_money"]?></td>
+
+
+                <td><?=$vo["order_add_time"]?></td>
+
                 <td>
-                    <a  class="btn btn-warning  btn-sm update" title="管理员修改" data-url="<?= Url::toRoute(['admin/update'])?>?admin_id=<?= $vo['admin_id']?>"><i class="fa fa-edit" aria-hidden="true"></i> </a>
-                    <a  class="btn btn-danger   btn-sm delete"  title="管理员删除" data-id="<?= $vo['admin_id']?>" data-url="<?= Url::toRoute(['admin/delete'])?>?admin_id=<?= $vo['admin_id']?>"> <i class="fa fa-trash-o fa-lg"></i></a>
+                    <a  class="btn btn-warning  btn-sm update" title="管理员修改" data-url="<?= Url::toRoute(['order/update'])?>?order_id=<?= $vo['order_id']?>"><i class="fa fa-edit" aria-hidden="true"></i> </a>
+                    <a  class="btn btn-danger   btn-sm delete"  title="管理员删除" data-id="<?= $vo['order_id']?>" data-url="<?= Url::toRoute(['order/delete'])?>?order_id=<?= $vo['order_id']?>"> <i class="fa fa-trash-o fa-lg"></i></a>
                 </td>
             </tr>
         <?php } ?>
         </tbody>
     </table>
-    <nav class="Page textRight" aria-label="Page navigation">
-        <?=$page?>
-    </nav>
+    <div class="pagination pull-right">
+        <?php echo yii\widgets\LinkPager::widget([
+            'pagination' => $pager,
+            'prevPageLabel' => '&#8249;',
+            'nextPageLabel' => '&#8250;',
+        ]); ?>
+    </div>
 </div>
-<script type="application/javascript">
-    (function($){
-        $("#reset").click(function(){
-            $('input[name="startTime"]').attr('value',"");
-            $('input[name="endTime"]').attr('value',"");
-            $('select[name="limit"] option').each(function(){
-                $(this).removeAttr("selected");
-            });
-            $('select[name="key"] option').each(function(){
-                $(this).removeAttr("selected");
-            });
-            $('input[name="content"]').attr('value',"");
-        });
-    })
-</script>

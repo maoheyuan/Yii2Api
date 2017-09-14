@@ -10,7 +10,7 @@ class Order extends ActiveRecord
 
     public static function tableName()
     {
-        return "{{%admin}}";
+        return "{{%order}}";
     }
 
     /*CREATE TABLE `mhy_order` (

@@ -5,9 +5,9 @@ namespace app\modules\admin\controllers;
 use Yii;
 use yii\base\Exception;
 use yii\web\Controller;
-use yii\web\Response;
-use app\models\Order;
-use app\models\OrderGoods;
+use yii\data\Pagination;
+use app\modules\admin\models\Order;
+use app\modules\admin\models\OrderGoods;
 use yii\helpers\ArrayHelper;
 use app\helper\Helper;
 
@@ -17,40 +17,44 @@ class OrderController extends Controller
     public   $tablePrefix="";
     public function init(){
         $this->enableCsrfValidation = false;
-        Yii::$app->response->format=Response::FORMAT_JSON;
+     /*   Yii::$app->response->format=Response::FORMAT_JSON;*/
         $this->tablePrefix= Yii::$app->db->tablePrefix;
     }
 
     public function actionIndex()
     {
-        $start_time=Yii::$app->request->get("start_time");
-        $end_time=Yii::$app->request->get("end_time");
-        $order_sn=Yii::$app->request->get("order_sn","");
-        $page= Yii::$app->request->get("page",0);
-        $page_limit= Yii::$app->request->get("page_limit",20);
+
+        $this->layout="main";
+        $getData=Yii::$app->request->get();
+        $startTime=Yii::$app->request->get("startTime","");
+        $endTime=Yii::$app->request->get("endTime");
+        $key=Yii::$app->request->get("key","");
+        $content=Yii::$app->request->get("content","");
+        $pageLimit=Yii::$app->request->get("limit","");
         $model=Order::find();
-        if($start_time){
-            $model->andWhere([">=","order_add_time",strtotime($start_time)]);
+        if($startTime){
+            $model->andWhere([">=","order_add_time",strtotime($startTime)]);
         }
-        if($end_time){
-            $model->andWhere(["<=","order_add_time",strtotime($end_time)]);
+        if($endTime){
+            $model->andWhere(["<=","order_add_time",strtotime($endTime)]);
         }
-        if($order_sn){
-            $model->where(["like","order_sn",$order_sn]);
+        if($content){
+            if($key=="order_id"){
+                $model->where(["order_id"=>$content]);
+            }
+            else{
+                $model->where(["like","order_sn",$content]);
+            }
         }
-        //echo $model->createCommand()->getRawSql();
         $count=$model->count();
-        $dataList =$model->offset($page*$page_limit)->limit($page_limit)->asArray()->all();
-        $createPage= Helper::create_page($count,$page,$page_limit);
-        return [
-            'status'=>true,
-            "prev_page"=>$createPage["prev_page"],
-            "next_page"=>$createPage["next_page"],
-            'count_page'=>$createPage["count_page"],
-            'first_page'=>$createPage["first_page"],
-            'last_page'=>$createPage["last_page"],
-            "list"=>$dataList
-        ];
+        $pageSize = Yii::$app->params['pageSize']['banner'];
+        $pager = new Pagination(['totalCount' => $count, 'pageSize' => $pageSize]);
+
+        $orderList=array();
+
+        $orderList = $model->offset($pager->offset)->limit($pager->limit)->all();
+        return $this->render("index", ['pager' => $pager, 'orderList' => $orderList]);
+
     }
 
 

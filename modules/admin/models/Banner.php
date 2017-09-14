@@ -74,7 +74,7 @@ class Banner extends ActiveRecord
         }
         return false;
     }
-    
+
     public  function  bannerDelete($banner_id){
         $data["Banner"]["banner_id"]=$banner_id;
         if($this->load($data)&&$this->validate()) {
