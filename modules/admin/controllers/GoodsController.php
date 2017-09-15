@@ -116,7 +116,7 @@ class GoodsController extends Controller
         if($model->setStatus($status)){
 
 
-            
+
         }
 
     }

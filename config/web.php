@@ -7,6 +7,9 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'charset' => 'utf-8',
+    'language' => 'zh-CN',
+    'timeZone' => 'Asia/Shanghai',
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -85,6 +88,12 @@ $config = [
             'class'    => 'app\components\mhyUploadsFile',    // 组件名称 arr 所指向的类文件
             'savePath'    => './uploads/images'  // 自定义组件的属性，在控制器的方法中这样访问属性 port 的值，\Yii::$app->mhyUploadsFile->savePath
         ],
+
+        'formatter' => [
+            'dateFormat' => 'yyyy-MM-dd',
+            'timeFormat' => 'HH:mm:ss',
+            'datetimeFormat' => 'yyyy-MM-dd HH:mm:ss'
+        ]
     ],
 
     'modules' => [
